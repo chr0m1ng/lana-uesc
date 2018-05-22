@@ -1,4 +1,4 @@
 # lana
 
 ### References
-All the references are on the [projects](https://github.com/chr0m1ng/lana/projects/1) tab.
+All the references are [here](https://github.com/chr0m1ng/lana/blob/master/REFERENCES.md)
