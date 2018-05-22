@@ -48,3 +48,6 @@ Alternative to Selenium to webscrapping in JS
 
 [Html to Canvas](http://html2canvas.hertzen.com)
 Upload [Image](https://api.imgur.com/endpoints/image/)
+
+### JavaScript
+ES6 [guide](https://medium.com/@matheusml/o-guia-do-es6-tudo-que-você-precisa-saber-8c287876325f)
