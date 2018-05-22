@@ -1,8 +1,6 @@
 # References
 ### Watson Assistant
 
-API for conversation
-
 [Comparsion](http://tech.vivocha.com/post/165964065943/chatbots-with-apiai-vs-ibm-watson-a-brief
 ) between Watson Assistant API and Dialog Flow API.ai
 
