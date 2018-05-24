@@ -53,5 +53,9 @@ Upload [Image](https://api.imgur.com/endpoints/image/)
 
 Contact [List](http://www.uesc.br/acessoainformacao/)
 
+### BOT Portal da Transparência Bahia
+
+["Senha Aberta"](http://www.transparencia.ba.gov.br/SenhaAberta/) module to scrap
+
 ### JavaScript
 ES6 [guide](https://medium.com/@matheusml/o-guia-do-es6-tudo-que-você-precisa-saber-8c287876325f)
