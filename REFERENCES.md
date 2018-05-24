@@ -4,7 +4,7 @@
 [Comparsion](http://tech.vivocha.com/post/165964065943/chatbots-with-apiai-vs-ibm-watson-a-brief
 ) between Watson Assistant API and Dialog Flow API.ai
 
-[Documentation](https://console.bluemix.net/docs/services/conversation/getting-started.html#gettingstarted)
+Watson Assistant API [Documentation](https://console.bluemix.net/docs/services/conversation/getting-started.html#gettingstarted)
 
 ### Flask for Python
 
