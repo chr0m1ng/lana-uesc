@@ -1,4 +1,4 @@
-# lana
+# Lana
 The whole project still under construction :construction:.
 
 ### Telegram BOT for Lana
