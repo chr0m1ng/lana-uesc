@@ -2,7 +2,7 @@
 The whole project still under construction :construction:.
 
 ### Telegram BOT for Lana
-You can start an conversation with the bot by clicking [here](t.me/lana_pa_bot). 
+You can start an conversation with the bot by clicking [here](https://t.me/lana_pa_bot). 
 For now it does nothing at all, just copy paste your own message.
 
 ### References
