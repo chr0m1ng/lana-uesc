@@ -1,21 +1,24 @@
 # References
 ### Watson Assistant
 
-[Comparsion](http://tech.vivocha.com/post/165964065943/chatbots-with-apiai-vs-ibm-watson-a-brief
-) between Watson Assistant API and Dialog Flow API.ai
+[Comparsion](http://tech.vivocha.com/post/165964065943/chatbots-with-apiai-vs-ibm-watson-a-brief) 
+between Watson Assistant API and Dialog Flow API.ai
 
 Watson Assistant API [Documentation](https://console.bluemix.net/docs/services/conversation/getting-started.html#gettingstarted)
 
 ### Flask for Python
 
-[Flask](http://flask.pocoo.org/docs/1.0/
-) is a framework that helps you create RESTful APIs in an easy way
+[Flask](http://flask.pocoo.org/docs/1.0/) 
+is a framework that helps you create RESTful APIs in an easy way
 
 ### Telegram BOT
 
 BOT [Introduction](https://core.telegram.org/bots)
+
 BOT [API](https://core.telegram.org/bots/api)
+
 [API](https://github.com/yagop/node-telegram-bot-api) to NodeJS
+
 [Webhook](http://mvalipour.github.io/node.js/2015/12/06/telegram-bot-webhook-existing-express) with NodeJS
 
 ### MongoDB
