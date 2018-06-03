@@ -29,8 +29,8 @@ NoSQL database
 ### Parse Server
 
 Official [guide](http://docs.parseplatform.org/parse-server/guide/).
-[Guide for installation](https://www.digitalocean.com/community/tutorials/how-to-run-parse-server-on-ubuntu-14-04
-) on DigitalOcean Droplet
+
+[Guide for installation](https://www.digitalocean.com/community/tutorials/how-to-run-parse-server-on-ubuntu-14-04) on DigitalOcean Droplet
 
 ### mLab
 
