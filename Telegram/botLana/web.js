@@ -21,4 +21,11 @@ module.exports = (lana) => {
     lana.processUpdate(req.body);
     res.sendStatus(200);
   });
+
+  app.post('/' + lana.token + '/sendMessage', (req, res) => {
+    if(lana.sendMessageEndpoint(req.body))
+      res.sendStatus(200);
+    else
+      res.sendStatus(400);
+  });
 };

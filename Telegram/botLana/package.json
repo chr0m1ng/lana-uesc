@@ -1,18 +1,20 @@
 {
-  "name": "telegram-demo-bot",
+  "name": "telegram-lana-bot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "node-telegram-bot-api": "^0.20.1"
+    "node-telegram-bot-api": "^0.20.1",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "",
+  "author": "Gabriel Santos",
   "license": "ISC"
 }
