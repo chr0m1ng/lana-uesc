@@ -1,6 +1,6 @@
-const token = require('./credentials').tokenTelegramBot;
-const url = require('./credentials').urlTelegramBot;
-const urlMessageEndpoint = require('./credentials').urlMessageEndpoint;
+const token = require('./config/credentials').tokenTelegramBot;
+const url = require('./config/credentials').urlTelegramBot;
+const urlMessageEndpoint = require('./config/credentials').urlMessageEndpoint;
 const request = require('request-promise');
 
 const Bot = require('node-telegram-bot-api');
@@ -32,7 +32,7 @@ lana.on('message', (msg) => {
     },
     date : new Date(msg.date * 1000)
   };
-  console.log("++++++ START OF MESSAGE ++++++\n" + JSON.stringify(msgJson, null, ' ') + "\n------ END OF MESSAGE ------\n");
+  console.log(JSON.stringify(msgJson));
 
   fowardMessageToLana(msg);
 });
@@ -71,6 +71,7 @@ const fowardMessageToLana = async (msg) => {
         },
         date : new Date()
       };
+      console.log(JSON.stringify(msgJson));
       lana.sendMessage(message.chat.id, 'Ops, algo deu errado, tente novamente');
   });
 }
@@ -86,7 +87,7 @@ lana.sendMessageEndpoint = (messageBody) => {
       },
       date : new Date()
     };
-    console.log("++++++ START OF MESSAGE ++++++\n" + JSON.stringify(msgJson, null, ' ') + "\n------ END OF MESSAGE ------\n");
+    console.log(JSON.stringify(msgJson));
     lana.sendMessage(messageBody.chatId, messageBody.message);
     return true;
   }
