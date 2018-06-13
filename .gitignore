@@ -1,3 +1,4 @@
 credentials.js
 tcc.code-workspace
 **/.gitignore
+node_modules

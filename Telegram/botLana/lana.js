@@ -1,6 +1,6 @@
-const token = require('./config/credentials').tokenTelegramBot;
-const url = require('./config/credentials').urlTelegramBot;
-const urlMessageEndpoint = require('./config/credentials').urlMessageEndpoint;
+const token = require('./config/keys').tokenTelegramBot;
+const url = require('./config/keys').urlTelegramBot;
+const urlMessageEndpoint = require('./config/keys').urlMessageEndpoint;
 const request = require('request-promise');
 
 const Bot = require('node-telegram-bot-api');
