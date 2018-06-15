@@ -32,10 +32,19 @@ Official [guide](http://docs.parseplatform.org/parse-server/guide/).
 
 [Guide for installation](https://www.digitalocean.com/community/tutorials/how-to-run-parse-server-on-ubuntu-14-04) on DigitalOcean Droplet
 
+[Guide for JS](http://docs.parseplatform.org/js/guide/)
+
+### Back4App
+BaaS platform to Parse Server
+
+[Documentation](https://www.back4app.com/docs/parse-documentation)
+
+
 ### mLab
 
-Simple alternative to work with MongoDB instead of Parse Server
+Simple alternative to work with MongoDB only instead of Parse Server
 [Documentation](https://docs.mlab.com)
+
 
 ### Selenium
 
