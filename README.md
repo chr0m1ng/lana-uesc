@@ -2,8 +2,10 @@
 The whole project still under construction :construction:.
 
 ### Telegram BOT for Lana
-You can start an conversation with the bot by clicking [here](https://t.me/lana_pa_bot). 
-For now it does nothing at all, just copy paste your own message.
+You can start an conversation with the bot clicking [here](https://t.me/lana_pa_bot). 
+
+### Monograph
+Scope of the Monograph can be found [here](/MONOGRAPH-SCOPE.md).
 
 ### References
-All the references are [here](https://github.com/chr0m1ng/lana/blob/master/REFERENCES.md)
+All the references are [here](/REFERENCES.md).
