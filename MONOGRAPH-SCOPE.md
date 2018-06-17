@@ -1,10 +1,10 @@
 # Escopo da Monografia
 
 ## Temas Gerais a Serem Abordados
- - [Telegram](#Telegram) 
- - [Watson](#Watson)
- - [botHUB](#botHUB)
- - [BaaS](#BaaS)
+ - [Telegram](#telegram) 
+ - [Watson](#tatson)
+ - [botHUB](#bothub)
+ - [BaaS](#baas)
  - [Áreas](#Áreas)
 
 ### Telegram
