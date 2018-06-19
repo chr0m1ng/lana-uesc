@@ -1,4 +1,4 @@
-const destroyAllSessions = () => {
+const destroyAllSessions = (Parse) => {
     let query = new Parse.Query(Parse.Session);
   
     query.find({
@@ -81,10 +81,10 @@ module.exports.registerUser = (Parse) => {
   
     user.signUp(null)
       .then((newUser) => {
-        destroyAllSessions();
+        destroyAllSessions(Parse);
         response.success({ code: 200, message: newUser });
       })
-      .catch((newUser, err) => response.error(409, "Usuario já existente"));
+      .catch((err) => response.error(err));
   };
 };
 
@@ -92,10 +92,10 @@ module.exports.loginUser = (Parse) => {
     return (request, response) => {
     Parse.User.logIn(request.params.username, request.params.password)
       .then((user) => {
-        destroyAllSessions();
+        destroyAllSessions(Parse);
         response.success({ code: 200, message: user.toJSON() });
       })
-      .catch((user, err) => response.error(401, "Usuario/Senha Incorreta"));
+      .catch((err) => response.error(err));
   };
 };
 
