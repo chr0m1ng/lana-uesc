@@ -13,7 +13,7 @@ const destroyAllSessions = (Parse) => {
       },
       useMasterKey: true
     });
-  };
+};
 
 module.exports.echo = (Parse) => { 
     return (request, response) => {
@@ -27,8 +27,9 @@ module.exports.getUserByField = (Parse) => {
     userQuery.equalTo(request.params.field, request.params.value);
     userQuery.first({
       success: (user) => {
-        if(user != undefined)
-          response.success({ code: 200, message: user.toJSON() });
+        if(user != undefined) {
+          response.success({ code: 200, message: user });
+        }
         else
           response.error(404, "Usuario não encontrado");
       },
@@ -48,12 +49,12 @@ module.exports.setUserField = (Parse) => {
         if(userToUpdate !== undefined) {
           userToUpdate.set(request.params.field, request.params.value);
           userToUpdate.save(null, {useMasterKey:true})
-          .then(userToUpdate => {
-            response.success({ code: 200, message: userToUpdate.toJSON() });
-          })
-          .catch(err => {
-            response.error(500, "Erro ao modificar Usuario");
-          });
+            .then(userToUpdate => {
+              response.success({ code: 200, message: userToUpdate });
+            })
+            .catch(err => {
+              response.error(500, "Erro ao modificar Usuario");
+            });
         }
         else
           response.error(404, "Usuario não encontrado");

@@ -1,0 +1,18 @@
+{
+  "name": "lana-b4a",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "events": "^3.0.0",
+    "jasmine": "^3.1.0",
+    "jasmine-node": "^1.14.5",
+    "parse": "^1.11.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jasmine spec/*.spec.js"
+  },
+  "author": "Gabriel Santos",
+  "license": "ISC"
+}
