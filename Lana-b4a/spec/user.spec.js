@@ -12,6 +12,8 @@ let setUserField = cloud_functions.setUserField(Parse);
 let purgeTable = require("./utils/purge-parse-table")(Parse);
 let ResponseStub = require("./utils/response-stub");
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
 describe("registerUser", () => {
     beforeEach((done) => {
         /// purge the user, and then proceed
@@ -30,7 +32,6 @@ describe("registerUser", () => {
     });
     it ("Deve registrar um usuario", (done) => {
         let responseStub = new ResponseStub();
-        let stub = responseStub.getStub();
         registerUser({
             params : {
                 name : "John",
@@ -40,16 +41,19 @@ describe("registerUser", () => {
                 interfaceId : "someTelegramIdHere1"
                 }
             },
-            stub
+            responseStub.getStub()
         );
         responseStub.onComplete()
             .then((resp) => {
                 let userQ =  new Parse.Query(Parse.User);
                 userQ.equalTo("telegramId", "someTelegramIdHere1");
-                return userQ.first({useMasterKey : true});
-            })
-            .then((user) => {
-                expect(user.getUsername()).toBe("jdoe1");
+                userQ.first({useMasterKey : true})
+                    .then(user => expect(user.getUsername()).toBe("jdoe1"))
+                    .catch((e) => {
+                        console.log(e);
+                        fail(e);
+                    })
+                    .then(() => done());
             })
             .catch((e) => {
                 console.log(e);
@@ -68,24 +72,23 @@ describe("loginUser", () => {
     });
     it ("Deve aceitar login", (done) => {
         let responseStub = new ResponseStub();
-        let stub = responseStub.getStub();
         registerUser({
             params : {
                 name : "John",
-                username : "jdoe1",
+                username : "jdoe2",
                 password : "123",
                 interface : "telegramId",
-                interfaceId : "someTelegramIdHere1"
+                interfaceId : "someTelegramIdHere2"
                 }
             },
-            stub
+            responseStub.getStub()
         );
         responseStub.onComplete()
             .then((resp) => {
                 let otherResponseStub = new ResponseStub();
                 loginUser({
                     params : {
-                        username : "jdoe1",
+                        username : "jdoe2",
                         password : "123"
                     }
                 }, otherResponseStub.getStub());
@@ -102,7 +105,8 @@ describe("loginUser", () => {
             .catch((e) => {
                 console.log(e);
                 fail(e);
-            });
+            })
+            .then(() => done());
     });
     it ("Deve rejeitar um request para logar usuario com username/password incorreta", (done) => {
         let responseStub = new ResponseStub();
@@ -143,28 +147,27 @@ describe("getUserByField", () => {
     });
     it ("Deve retornar usuario com o campo e valor informado", (done) => {
         let responseStub = new ResponseStub();
-        let stub = responseStub.getStub();
         registerUser({
             params : {
                 name : "John",
-                username : "jdoe1",
+                username : "jdoe3",
                 password : "123",
                 interface : "telegramId",
-                interfaceId : "666"
+                interfaceId : "111"
                 }
-        }, stub);
+        }, responseStub.getStub());
         responseStub.onComplete()
             .then((resp) => {
                 let otherResponseStub = new ResponseStub();
                 getUserByField({
                     params : {
                         field : "telegramId",
-                        value : "666"
+                        value : "111"
                     }
                 }, otherResponseStub.getStub());
                 otherResponseStub.onComplete()
-                    .then((resp) => {
-                        expect(resp.message.getUsername()).toBe("jdoe1");
+                    .then((otherResp) => {
+                        expect(otherResp.message.getUsername()).toBe("jdoe3");
                     })
                     .catch((e) => {
                         console.log(e);
@@ -175,7 +178,8 @@ describe("getUserByField", () => {
             .catch((e) => {
                 console.log(e);
                 fail(e);
-            });
+            })
+            .then(() => done());
     });
 });
 
@@ -203,16 +207,15 @@ describe("setUserField", () => {
     });
     it ("Deve retornar usuario com o campo e valor modificado", (done) => {
         let responseStub = new ResponseStub();
-        let stub = responseStub.getStub();
         registerUser({
             params : {
                 name : "John",
-                username : "jdoe1",
+                username : "jdoe4",
                 password : "123",
                 interface : "telegramId",
-                interfaceId : "666"
+                interfaceId : "222"
             }
-        }, stub);
+        }, responseStub.getStub());
         responseStub.onComplete()
             .then((resp) => {
                 let otherResponseStub = new ResponseStub();
@@ -220,12 +223,12 @@ describe("setUserField", () => {
                     params : {
                         userId : resp.message.id,
                         field : "telegramId",
-                        value : "999"
+                        value : "333"
                     }
                 }, otherResponseStub.getStub());
                 otherResponseStub.onComplete()
                     .then((respUser) => {
-                        expect(respUser.message.get("telegramId")).toBe("999");
+                        expect(respUser.message.get("telegramId")).toBe("333");
                     })
                     .catch((e) => {
                         console.log(e);
@@ -236,6 +239,7 @@ describe("setUserField", () => {
             .catch((e) => {
                 console.log(e);
                 fail(e);
-            });
+            })
+            .then(() => done());
     });
 });

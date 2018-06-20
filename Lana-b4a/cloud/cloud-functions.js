@@ -34,7 +34,7 @@ module.exports.getUserByField = (Parse) => {
           response.error(404, "Usuario não encontrado");
       },
       error: (err) => {
-        response.error(404, "Usuario não encontrado");
+        response.error(err);
       }
     });
   };
@@ -53,14 +53,14 @@ module.exports.setUserField = (Parse) => {
               response.success({ code: 200, message: userToUpdate });
             })
             .catch(err => {
-              response.error(500, "Erro ao modificar Usuario");
+              response.error(err);
             });
         }
         else
           response.error(404, "Usuario não encontrado");
       })
       .catch(err => {
-        response.error(404, "Usuario não encontrado");
+        response.error(err);
       });
   };
 };
@@ -119,20 +119,20 @@ module.exports.setContext = (Parse) => {
           myContext.set(request.params.interface, request.params.interfaceId);
   
         if(request.params.intents != undefined)
-          myContext.set("Intents", request.params.intents);
+          myContext.set("intents", request.params.intents);
         if(request.params.entities != undefined)
-          myContext.set("Entities", request.params.entities);
+          myContext.set("entities", request.params.entities);
       
         myContext.save(null)
           .then(newContext => {
             response.success({code: 200, message: newContext});
           })
           .catch(err => {
-            response.error(500, "erro ao salvar Context");
+            response.error(err);
           });
       })
       .catch(err => {
-        response.error(500, "erro ao salvar Context");
+        response.error(err);
       });
   };
 };
@@ -150,7 +150,7 @@ module.exports.getContextByInterfaceId = (Parse) => {
           response.error(404, "Context não encontrado");
       })
       .catch(err => {
-        response.error(500, "erro ao buscar Context");
+        response.error(err);
       });
   };
 };
