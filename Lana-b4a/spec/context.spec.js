@@ -36,8 +36,9 @@ describe("setContext", () => {
             params : {
                 interface : "telegramId",
                 interfaceId : "666",
-                intents : ["int1, int2"],
-                entities : {ent1 : "1", ent2 : "2"}
+                context : {
+                    intents : ["int1", "int2"]
+                }
             }
         }, responseStub.getStub());
 
@@ -69,7 +70,9 @@ describe("setContext", () => {
             params : {
                 interface : "telegramId",
                 interfaceId : "333",
-                intents : ["int1"]
+                context : {
+                    intents : ["int1"]
+                }
             }
         }, responseStub.getStub());
 
@@ -81,17 +84,16 @@ describe("setContext", () => {
                     params : {
                         interface : "telegramId",
                         interfaceId : "333",
-                        intents : [],
-                        entities : {val1 : "1"}
+                        context : {
+                        }
                     }
                 }, otherResponseStub.getStub());
 
                 otherResponseStub.onComplete()
                     .then(otherResp => {
                         expect(otherResp.message.get("telegramId")).toBe("333");
-                        expect(otherResp.message.get("intents")).not.toEqual(["int1"]);
-                        expect(otherResp.message.get("intents")).toEqual([]);
-                        expect(otherResp.message.get("entities")).toEqual({val1 : "1"});
+                        expect(otherResp.message.get("context")).not.toEqual({intents : ["int1"]});
+                        expect(otherResp.message.get("context")).toEqual([]);
                     })
                     .catch(e => {
                         console.log(e);
@@ -133,8 +135,9 @@ describe("getContextByInterfaceId", () => {
             params : {
                 interface : "telegramId",
                 interfaceId : "111",
-                intents : ["int1", "int2", "int3"],
-                entities : {ent1 : "1", ent2 : "2"}
+                context : {
+                    intents : ["int1", "int2"]
+                }
             }
         }, responseStub.getStub());
 

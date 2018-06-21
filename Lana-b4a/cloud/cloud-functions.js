@@ -104,8 +104,8 @@ module.exports.setContext = (Parse) => {
     return (request, response) => {
     if(request.params.interface == undefined ||
       request.params.interfaceId == undefined ||
-      (request.params.intents == undefined && request.params.entities == undefined)) {
-        response.error(400, "Context precisa de interface, interfaceId, intents e/ou entities");
+      request.params.context == undefined) {
+        response.error(400, "Precisa de interface, interfaceId e Context");
     }
     let Context = Parse.Object.extend('Context');
     let contextQuery = new Parse.Query(Context);
@@ -117,11 +117,8 @@ module.exports.setContext = (Parse) => {
           myContext = contextToUpdate;
         else
           myContext.set(request.params.interface, request.params.interfaceId);
-  
-        if(request.params.intents != undefined)
-          myContext.set("intents", request.params.intents);
-        if(request.params.entities != undefined)
-          myContext.set("entities", request.params.entities);
+
+        myContext.set("context", request.params.context);
       
         myContext.save(null)
           .then(newContext => {
