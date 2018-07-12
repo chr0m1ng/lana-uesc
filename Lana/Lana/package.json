@@ -1,0 +1,14 @@
+{
+  "name": "lana",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lana.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gabriel Santos",
+  "license": "ISC",
+  "dependencies": {
+    "watson-developer-cloud": "^3.6.0"
+  }
+}

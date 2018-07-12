@@ -1,6 +1,7 @@
-const token = require('./config/keys').tokenTelegramBot;
-const url = require('./config/keys').urlTelegramBot;
-const urlMessageEndpoint = require('./config/keys').urlMessageEndpoint;
+const keys = require('./config/keys');
+const token = keys.tokenTelegramBot;
+const url = keys.urlTelegramBot;
+const urlMessageEndpoint = keys.urlMessageEndpoint;
 const request = require('request-promise');
 
 const Bot = require('node-telegram-bot-api');
@@ -34,13 +35,13 @@ lana.on('message', (msg) => {
   };
   console.log(JSON.stringify(msgJson));
 
-  fowardMessageToLana(msg);
+  // fowardMessageToLana(msg);
 });
 
 const fowardMessageToLana = async (msg) => {
   let options = {
     method : 'POST',
-    uri : 'http://httpbin.org/post',
+    uri : '',
     body : {
       interface : 'telegram',
       message : msg.text,
@@ -58,7 +59,10 @@ const fowardMessageToLana = async (msg) => {
   await request(options)
     .then((parsedBody) => { 
       //Lana will first respond either the final answer or ETA, I also need to log that.
-      lana.sendMessage(msg.chat.id, 'Requisição Feita com Sucesso');
+      if(parsedBody.parse_mode)
+        lana.sendMessage(msg.chat.id, 'Requisição Feita com Sucesso', {parse_mode: parsedBody.parse_mode});
+      else
+        lana.sendMessage(msg.chat.id, 'Requisição Feita com Sucesso');
     })
     .catch((err) => {
       let msgJson = {
@@ -88,7 +92,10 @@ lana.sendMessageEndpoint = (messageBody) => {
       date : new Date()
     };
     console.log(JSON.stringify(msgJson));
-    lana.sendMessage(messageBody.chatId, messageBody.message);
+    if(messageBody.parse_mode)
+      lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode: messageBody.parse_mode});
+    else
+      lana.sendMessage(messageBody.chatId, messageBody.message);
     return true;
   }
   else {
