@@ -2,13 +2,15 @@
   "name": "lana",
   "version": "1.0.0",
   "description": "",
-  "main": "lana.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Gabriel Santos",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.16.3",
     "watson-developer-cloud": "^3.6.0"
   }
 }

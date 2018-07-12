@@ -2,7 +2,8 @@ const keys = require('./config/keys');
 const token = keys.tokenTelegramBot;
 const url = keys.urlTelegramBot;
 const urlMessageEndpoint = keys.urlMessageEndpoint;
-const request = require('request-promise');
+const lana_api_key = keys.lana_api_key;
+const request = require('request');
 
 const Bot = require('node-telegram-bot-api');
 let lana;
@@ -17,10 +18,13 @@ else {
 
 console.log('lana telegram bot server started...');
 
+lana.on('polling_error', (error) => {
+  console.error(error);
+})
+
 //Any message
 lana.on('message', (msg) => {
-  lana.sendMessage(msg.chat.id, 'Recebi a mensagem "' + msg.text + '" de: ' + msg.from.first_name + ' ' + msg.from.last_name);
-  
+  // lana.sendMessage(msg.chat.id, 'Recebi a mensagem "' + msg.text + '" de: ' + msg.from.first_name + ' ' + msg.from.last_name);
   let msgJson = {
     interface : 'telegram',
     type : 'incoming',
@@ -35,13 +39,16 @@ lana.on('message', (msg) => {
   };
   console.log(JSON.stringify(msgJson));
 
-  // fowardMessageToLana(msg);
+  fowardMessageToLana(msg);
 });
 
-const fowardMessageToLana = async (msg) => {
+const fowardMessageToLana = (msg) => {
   let options = {
     method : 'POST',
-    uri : '',
+    uri : 'https://lana-api.herokuapp.com/api/message',
+    headers : {
+      'x-api-key': lana_api_key
+    },
     body : {
       interface : 'telegram',
       message : msg.text,
@@ -56,15 +63,8 @@ const fowardMessageToLana = async (msg) => {
     json : true // Automatically stringifies the body to JSON
   };
 
-  await request(options)
-    .then((parsedBody) => { 
-      //Lana will first respond either the final answer or ETA, I also need to log that.
-      if(parsedBody.parse_mode)
-        lana.sendMessage(msg.chat.id, 'Requisição Feita com Sucesso', {parse_mode: parsedBody.parse_mode});
-      else
-        lana.sendMessage(msg.chat.id, 'Requisição Feita com Sucesso');
-    })
-    .catch((err) => {
+  request(options, (err, resp, body) => {
+    if (err) {
       let msgJson = {
         interface : 'telegram',
         type : 'outgoing',
@@ -76,8 +76,52 @@ const fowardMessageToLana = async (msg) => {
         date : new Date()
       };
       console.log(JSON.stringify(msgJson));
-      lana.sendMessage(message.chat.id, 'Ops, algo deu errado, tente novamente');
+      lana.sendMessage(msg.chat.id, 'Ops, algo deu errado, tente novamente');
+    }
+    else {
+      let msgJson = {
+        interface : 'telegram',
+        type : 'outgoing',
+        message : body.message,
+        to : {
+          chatId : body.chatId
+        },
+        date : new Date()
+      };
+      console.log(JSON.stringify(msgJson));
+      lana.sendMessage(body.chatId, body.message, {parse_mode: 'Markdown'});
+    }
   });
+
+  // request(options)
+  //   .then((parsedBody) => { 
+  //     //Lana will first respond either the final answer or ETA
+  //     let msgJson = {
+  //       interface : 'telegram',
+  //       type : 'outgoing',
+  //       message : messageBody.message,
+  //       to : {
+  //         chatId : messageBody.chatId
+  //       },
+  //       date : new Date()
+  //     };
+  //     console.log(JSON.stringify(msgJson));
+  //     lana.sendMessage(msg.chat.id, messageBody.message, {parse_mode: 'Markdown'});
+  //   })
+  //   .catch(err => {
+  //     let msgJson = {
+  //       interface : 'telegram',
+  //       type : 'outgoing',
+  //       message : msg.text,
+  //       errMessage : err,
+  //       to : {
+  //         chatId : msg.chat.id
+  //       },
+  //       date : new Date()
+  //     };
+  //     console.log(JSON.stringify(msgJson));
+  //     lana.sendMessage(msg.chat.id, 'Ops, algo deu errado, tente novamente');
+  // });
 }
 
 lana.sendMessageEndpoint = (messageBody) => {
@@ -95,7 +139,7 @@ lana.sendMessageEndpoint = (messageBody) => {
     if(messageBody.parse_mode)
       lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode: messageBody.parse_mode});
     else
-      lana.sendMessage(messageBody.chatId, messageBody.message);
+      lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode});
     return true;
   }
   else {

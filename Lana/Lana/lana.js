@@ -29,7 +29,11 @@ lana.recvMessage = (messageBody) => {
     return new Promise((resolve, reject) => {
         sendMessageToWatson(messageBody.message, {})
             .then(watson_answer => {
-                resolve(watson_answer.output.text[0]);
+                let msgJson = {
+                    message : watson_answer.output.text[0],
+                    chatId : messageBody.user.chatId
+                  };
+                resolve(msgJson);
             })
             .catch(err => reject(console.error));
     });
