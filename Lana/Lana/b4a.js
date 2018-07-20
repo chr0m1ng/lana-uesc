@@ -10,7 +10,7 @@ b4a.getUserContext = (interface, interfaceId) => {
         'interface' : interface,
         'interfaceId' : interfaceId})
         .then(resp => {
-            resolve(resp.message);
+            resolve(resp.message.context);
         })
         .catch(err => {
             reject(err);

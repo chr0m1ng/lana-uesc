@@ -1,11 +1,91 @@
 class Lana {}
+const request = require('request');
 const watson_api = require('./watson');
 const b4a = require('./b4a');
 let lana = new Lana();
 
-const handleWatsonAnswer = answer => {
+const sendFinalMessageToEndPoint = (message, endpoint, user) => {
+    const options = {
+        method : 'POST',
+        uri : 'http://127.0.0.1:5001/563039246:AAF4jWLeMQBGRCkXFl1S4cp44VNSxzEgJDs/sendMessage',
+        body : {
+            'message' : message,
+            'chatId' : `${user.id}`
+        },
+        json : true
+    };
+    request(options, (err, resp, body) => {
+        console.log(body);
+    });
+};
+
+const createNewUserAndProvideFeedBack = (context, message_body) => {
+        const interface = message_body.interface;
+        const user = message_body.user;
+        const interfaceId = `${user.id}`;
+    b4a.newUser(context.username.substring(1), context.password.substring(1), interface, interfaceId, user.name)
+            .then(created_user => {
+                b4a.setUserContext(interface, interfaceId, {}) //Usuario Criado, vou zerar o context dele no b4a
+                    .then(saved_context => {
+                        sendFinalMessageToEndPoint('Pronto, seu usuario foi criado com sucesso, já podemos conversar', message_body.messageEndpoint, user);
+                    })
+                    .catch(set_context_err => {
+                        sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, user);
+                    });
+            })
+            .catch(new_user_err => { //Erro ao criar usuario, verificar se foi erro de usuario já existente
+                if(new_user_err.code == 141) { //Username já está em uso, precisa jogar usuario para intent Usuario_Registrar_Existente
+                    watson_api.sendIntentToWatson('Usuario_Registrar_Existente') //Manda intent de usuario existente pro watson
+                        .then(watson_answer => {
+                            b4a.setUserContext(interface, interfaceId, watson_answer.context) //Salva novo contexto com erro de registro de usuario e manda mensagem avisando
+                                .then(saved_context => {
+                                    sendFinalMessageToEndPoint(watson_answer.output.text[0], message_body.messageEndpoint, user);
+                                })
+                                .catch(set_context_err => {
+                                    sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, message_body.user);
+                                });
+                        })
+                        .catch(watson_err => {
+                            sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, message_body.user);                
+                        });
+                }
+                else
+                    sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, message_body.user);
+            })            
+};
+
+const handleNewLanaUser = (answer, message_body) => {
+    return new Promise(async (resolve, reject) => {
+        const context = answer.context;
+        const interface = message_body.interface;
+        const user = message_body.user;
+        const interfaceId = `${user.id}`;
+        await createNewUserAndProvideFeedBack(context, message_body); //Mando executar a função de criar novo usuario e sigo sem esperar ela acabar
+        b4a.setUserContext(interface, interfaceId, context) //Atualizo o context e retorno o feedBack de espera padrão da lana
+            .then(saved_context => {
+                resolve(answer.output.text[0]);
+            })
+            .catch(set_context_err => reject(set_context_err));
+    });
+};
+
+const handleWatsonAnswer = (answer, message_body) => {
     return new Promise((resolve, reject) => {
-        resolve('message handled');
+        const interface = message_body.interface;
+        const user = message_body.user;
+        const interfaceId = `${user.id}`;
+        if(answer.context.intent == 'Usuario_Registrar') { //Tratamento de Criação de Usuario é diferente de outros serviços
+            handleNewLanaUser(answer, message_body)
+                .then(lana_message => resolve(lana_message))
+                .catch(lana_err => reject(lana_err));
+        }
+        else {
+            b4a.setUserContext(interface, interfaceId, answer.context)
+                .then(saved_context => {
+                    resolve('context saved');
+                })
+                .catch(set_context_err => reject(set_context_err));
+        }
     });
 };
 
@@ -19,13 +99,13 @@ const handleMessage = message_body => {
             .then(user_context => { //Context existente
                 watson_api.sendMessageToWatson(message, user_context) //Manda a mensagem com o context anterior que o watson sabe oq fazer
                     .then(watson_answer => {
-                        handleWatsonAnswer(watson_answer)
+                        handleWatsonAnswer(watson_answer, message_body)
                             .then(lana_message => {
-                                const msgJson = {
+                                const msg_json = {
                                     message : lana_message,
                                     chatId : interfaceId
                                 };
-                                resolve(msgJson); //A lana cuidou do que deveria ser feito, basta mandar a mensagem de volta para o usuario
+                                resolve(msg_json); //A lana cuidou do que deveria ser feito, basta mandar a mensagem de volta para o usuario
                             })
                             .catch(lana_err => reject(lana_err)); //Erro com a Lana
                     })
@@ -37,13 +117,13 @@ const handleMessage = message_body => {
                         .then(user => { //Usuario existente porem sem context (como??), melhor salvar novo context e seguir normalmente
                             watson_api.sendMessageToWatson(message, {}) //Mensagem sem contexto anterior...
                                 .then(watson_answer => {
-                                    handleWatsonAnswer(watson_answer)
+                                    handleWatsonAnswer(watson_answer, message_body)
                                         .then(lana_message => {
-                                            const msgJson = {
+                                            const msg_json = {
                                                 message : lana_message,
                                                 chatId : interfaceId
                                             };
-                                            resolve(msgJson); //A lana cuidou do que deveria ser feito, basta mandar a mensagem de volta para o usuario
+                                            resolve(msg_json); //A lana cuidou do que deveria ser feito, basta mandar a mensagem de volta para o usuario
                                         })
                                         .catch(lana_err => reject(lana_err)); //Erro com a Lana
                                 })
@@ -53,12 +133,12 @@ const handleMessage = message_body => {
                             watson_api.sendMessageToWatson('', {}) //Watson deve responder mensagem para novo usuario
                                 .then(watson_answer => {
                                     b4a.setUserContext(interface, interfaceId, watson_answer.context)
-                                        .then(savedContext => { //Salvou o context no b4a
-                                            const msgJson = {
+                                        .then(saved_context => { //Salvou o context no b4a
+                                            const msg_json = {
                                                 message : watson_answer.output.text[0],
                                                 chatId : interfaceId
                                             };
-                                            resolve(msgJson); //Novo usuario nunca mandou mensagem nenhuma, só enviar resposta de volta e salvar estado
+                                            resolve(msg_json); //Novo usuario nunca mandou mensagem nenhuma, só enviar resposta de volta e salvar estado
                                         })
                                         .catch(set_context_err => reject(set_context_err)); //Erro com o b4a
                                 })
