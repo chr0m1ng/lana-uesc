@@ -10,8 +10,8 @@ app.get('/', (req, res) => {
   res.send('Para usar e autenticar fazer post request em /api/message e passar x-api-key na header');
 });
 
-// const server = app.listen(5000, () => {
-const server = app.listen(process.env.PORT, () => {
+const server = app.listen(5000, () => {
+// const server = app.listen(process.env.PORT, () => {
   const host = server.address().address;
   const port = server.address().port;
 
@@ -31,17 +31,16 @@ module.exports = (lana) => {
       lana.recvMessage(req.body)
         .then(respFromLana => {
           res.statusCode = 200;
-          res.send(respFromLana);
+          res.status(200).send(respFromLana);
         })
         .catch(err => {
-          res.statusCode = 500;
-          res.send('Desculpe, tente novamente mais tarde');
+          console.error(err);
+          res.status(500).send(err);
         });
     }
     else {
       console.error('AUTH FAILED');
-      res.statusCode = 401;
-      res.send('API_KEY invalida');
+      res.status(401).send('API_KEY invalida');
     }
   })
 };
