@@ -48,7 +48,7 @@ b4a.getUser = (interface, interfaceId) => {
 
 b4a.setUserProp = (userId, propName, propValue) => {
     return new Promise((resolve, reject) => 
-        Parse.Cloud.run('getUserByField', {
+        Parse.Cloud.run('setUserField', {
             'userId' : userId,
             'field' : propName,
             'value' : propValue})

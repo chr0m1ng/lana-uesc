@@ -7,7 +7,7 @@ let lana = new Lana();
 const sendFinalMessageToEndPoint = (message, endpoint, user) => {
     const options = {
         method : 'POST',
-        uri : 'http://127.0.0.1:5001/563039246:AAF4jWLeMQBGRCkXFl1S4cp44VNSxzEgJDs/sendMessage',
+        uri : endpoint,
         body : {
             'message' : message,
             'chatId' : `${user.id}`
@@ -51,7 +51,7 @@ const createNewUserAndProvideFeedBack = (context, message_body) => {
                 }
                 else
                     sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, message_body.user);
-            })            
+            });            
 };
 
 const handleNewLanaUser = (answer, message_body) => {
@@ -69,6 +69,62 @@ const handleNewLanaUser = (answer, message_body) => {
     });
 };
 
+const authUserAndProvideFeedBack = (context, message_body) => {
+    const interface = message_body.interface;
+    const user = message_body.user;
+    const interfaceId = `${user.id}`;
+    b4a.checkUserCredentials(context.username.substring(1), context.password.substring(1))
+        .then(logged_user => {
+            b4a.setUserProp(logged_user.objectId, interface, interfaceId)
+                .then(setted_prop => {
+                    b4a.setUserContext(interface, interfaceId, {}) //Usuario Logado, vou zerar o context dele no b4a
+                        .then(saved_context => {
+                            sendFinalMessageToEndPoint('Pronto, consegui te localizar nos meus contatos... Já podemos conversar', message_body.messageEndpoint, user);
+                        })
+                        .catch(set_context_err => {
+                            sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde context0', message_body.messageEndpoint, user);
+                        });
+                })
+                .catch(set_prop_err => {
+                    sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde prop0', message_body.messageEndpoint, user);
+                });
+        })
+        .catch(auth_user_err => {
+            if(auth_user_err.code == 141) { //Usuario ou senha incorreta
+                watson_api.sendIntentToWatson('Usuario_Entrar_Incorreto') //Manda intent de usuario/senha incorreto pro watson
+                    .then(watson_answer => {
+                        b4a.setUserContext(interface, interfaceId, watson_answer.context) //Salva novo contexto com erro de login de usuario e manda mensagem avisando
+                            .then(saved_context => {
+                                sendFinalMessageToEndPoint(watson_answer.output.text[0], message_body.messageEndpoint, user);
+                            })
+                            .catch(set_context_err => {
+                                sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde context', message_body.messageEndpoint, message_body.user);
+                            });
+                    })
+                    .catch(watson_err => {
+                        sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde watson', message_body.messageEndpoint, message_body.user);                
+                    });
+            }
+            else
+                sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde auth', message_body.messageEndpoint, message_body.user);
+        });
+};
+
+const handleLoginUser = (answer, message_body) => {
+    return new Promise(async (resolve, reject) => {
+        const context = answer.context;
+        const interface = message_body.interface;
+        const user = message_body.user;
+        const interfaceId = `${user.id}`;
+        await authUserAndProvideFeedBack(context, message_body); //Mando executar a função de logar usuario e sigo sem esperar ela acabar
+        b4a.setUserContext(interface, interfaceId, context) //Atualizo o context e retorno o feedBack de espera padrão da lana
+            .then(saved_context => {
+                resolve(answer.output.text[0]);
+            })
+            .catch(set_context_err => reject(set_context_err));
+    });
+};
+
 const handleWatsonAnswer = (answer, message_body) => {
     return new Promise((resolve, reject) => {
         const interface = message_body.interface;
@@ -76,6 +132,11 @@ const handleWatsonAnswer = (answer, message_body) => {
         const interfaceId = `${user.id}`;
         if(answer.context.intent == 'Usuario_Registrar') { //Tratamento de Criação de Usuario é diferente de outros serviços
             handleNewLanaUser(answer, message_body)
+                .then(lana_message => resolve(lana_message))
+                .catch(lana_err => reject(lana_err));
+        }
+        else if(answer.context.intent == 'Usuario_Entrar') {
+            handleLoginUser(answer, message_body)
                 .then(lana_message => resolve(lana_message))
                 .catch(lana_err => reject(lana_err));
         }
