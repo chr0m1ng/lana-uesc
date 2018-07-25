@@ -26,14 +26,15 @@ watsonAPI.sendMessageToWatson = (message, context) => {
     });
 }
 
-watsonAPI.sendIntentToWatson = (intent) => {
+watsonAPI.sendIntentToWatson = (intent, context = {}) => {
     return new Promise((resolve, reject) => {
         watson_conversation.message({
             workspace_id: keys.watson_workspace_id,
             intents : [{
                 "intent" : intent,
                 "confidence" : 1
-            }]
+            }],
+            'context' : context
         }, (err, res) => {
             if(err)
                 reject(err);

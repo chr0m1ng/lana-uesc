@@ -82,11 +82,11 @@ const authUserAndProvideFeedBack = (context, message_body) => {
                             sendFinalMessageToEndPoint('Pronto, consegui te localizar nos meus contatos... Já podemos conversar', message_body.messageEndpoint, user);
                         })
                         .catch(set_context_err => {
-                            sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde context0', message_body.messageEndpoint, user);
+                            sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, user);
                         });
                 })
                 .catch(set_prop_err => {
-                    sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde prop0', message_body.messageEndpoint, user);
+                    sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, user);
                 });
         })
         .catch(auth_user_err => {
@@ -98,15 +98,15 @@ const authUserAndProvideFeedBack = (context, message_body) => {
                                 sendFinalMessageToEndPoint(watson_answer.output.text[0], message_body.messageEndpoint, user);
                             })
                             .catch(set_context_err => {
-                                sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde context', message_body.messageEndpoint, message_body.user);
+                                sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, message_body.user);
                             });
                     })
                     .catch(watson_err => {
-                        sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde watson', message_body.messageEndpoint, message_body.user);                
+                        sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, message_body.user);                
                     });
             }
             else
-                sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde auth', message_body.messageEndpoint, message_body.user);
+                sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', message_body.messageEndpoint, message_body.user);
         });
 };
 
@@ -125,25 +125,106 @@ const handleLoginUser = (answer, message_body) => {
     });
 };
 
+const handleNewUserInfo = (answer, message_body) => {
+    return new Promise(((resolve, reject) => {
+        const context = answer.context;
+        const interface = message_body.interface;
+        const user = message_body.user;
+        const interfaceId = `${user.id}`;
+        b4a.getUser(interface, interfaceId)
+            .then(lana_user => {
+                context.new_user_info.forEach(info => {
+                    b4a.setUserProp(lana_user.id, info, context[info])
+                        .then(setted_prop => {
+                            const disgress = () => {
+                                return new Promise((resolve, reject) => {
+                                    //Vou zerar coisas do context
+                                    context.go_back = null;
+                                    context.intent = null;
+                                    context.new_user_info = null; //Removo new_user_info pois já foi resolvido
+                                    watson_api.sendIntentToWatson(context.disgress_from, context)
+                                        .then(watson_answer => {
+                                            handleWatsonAnswer(watson_answer, message_body)
+                                                .then(lana_message => resolve(lana_message))
+                                                .catch(lana_err => reject(lana_err));
+                                        })
+                                        .catch(watson_err => reject(watson_err));
+                                });
+                            };
+
+                            const just_save = () => {
+                                b4a.setUserContext(interface, interfaceId, context) //Atualizo o context e retorno o feedBack de espera padrão da lana
+                                    .then(saved_context => {
+                                        resolve(answer.output.text[0]);
+                                    })
+                                    .catch(set_context_err => reject(set_context_err));
+                            };
+                            const result = context.go_back == true ? disgress() : just_save(); //Deve voltar para um intent especifico ou somente salvar
+                            resolve(result);
+                        })
+                        .catch(set_prop_err => reject(set_prop_err));
+                });
+            })
+            .catch(get_user_err => reject(get_user_err));
+    }));
+};
+
+const handleLocateUserInfo = (answer, message_body) => {
+    return new Promise((resolve, reject) => {
+        const interface = message_body.interface;
+        const user = message_body.user;
+        const interfaceId = `${user.id}`;
+        b4a.getUser(interface, interfaceId) //Vou buscar o usuario no b4a
+        .then(lana_user => {
+            answer.context.needs.forEach(info => { //Vou verificar tudo que preciso buscar do usuario, caso já tenha no b4a eu seto no context
+                if(lana_user.get(info) != null) 
+                    answer.context[info] = lana_user.get(info);
+            });
+            //Apos setar informações no context eu replico a mensagem ao watson com o novo context
+            watson_api.sendMessageToWatson(message_body.message, answer.context) //Mensagem reenviada junto ao context modificado
+                .then(watson_answer => {
+                    if(watson_answer.context.search_info_first != null) //Mesmo com novo context ainda necessita de outras informações que não estão no b4a
+                        watson_answer.context.search_info_first = false; //Caso não achou as infos no b4a então não precisa buscar de novo
+                    handleWatsonAnswer(watson_answer, message_body) //Vou voltar a tentar resolver a mensagem, desta vez não entrará aqui novamente
+                        .then(lana_message => resolve(lana_message))
+                        .catch(lana_err => reject(lana_err));
+                })
+                .catch(watson_err => reject(watson_err));
+        })
+        .catch(get_user_err => reject(get_user_err));
+    });
+};
+    
 const handleWatsonAnswer = (answer, message_body) => {
     return new Promise((resolve, reject) => {
         const interface = message_body.interface;
         const user = message_body.user;
         const interfaceId = `${user.id}`;
-        if(answer.context.intent == 'Usuario_Registrar') { //Tratamento de Criação de Usuario é diferente de outros serviços
+        //Aqui teremos alguns tratamentos especiais
+        if(answer.context.intent == 'Usuario_Registrar') { //Novo usuario da lana
             handleNewLanaUser(answer, message_body)
                 .then(lana_message => resolve(lana_message))
                 .catch(lana_err => reject(lana_err));
         }
-        else if(answer.context.intent == 'Usuario_Entrar') {
+        else if(answer.context.intent == 'Usuario_Entrar') { //Usuario antigo logando na lana
             handleLoginUser(answer, message_body)
                 .then(lana_message => resolve(lana_message))
                 .catch(lana_err => reject(lana_err));
         }
-        else {
+        else if(answer.context.new_user_info != null) { //Salvar uma informação do usuario
+            handleNewUserInfo(answer, message_body)
+                .then(lana_message => resolve(lana_message))
+                .catch(lana_err => reject(lana_err));
+        }
+        else if(answer.context.search_info_first == true) { //Buscar por informações do usuario para realizar um serviço
+            handleLocateUserInfo(answer, message_body)
+                .then(lana_message => resolve(lana_message))
+                .catch(lana_err => reject(lana_err));
+        }
+        else { //Qualquer outro
             b4a.setUserContext(interface, interfaceId, answer.context)
                 .then(saved_context => {
-                    resolve('context saved');
+                    resolve(answer.output.text[0]);
                 })
                 .catch(set_context_err => reject(set_context_err));
         }
