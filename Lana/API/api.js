@@ -10,8 +10,8 @@ app.get('/', (req, res) => {
   res.send('Para usar e autenticar fazer post request em /api/message e passar x-api-key na header');
 });
 
-const server = app.listen(5000, () => {
-// const server = app.listen(process.env.PORT, () => {
+// const server = app.listen(5000, () => {
+const server = app.listen(process.env.PORT, () => {
   const host = server.address().address;
   const port = server.address().port;
 

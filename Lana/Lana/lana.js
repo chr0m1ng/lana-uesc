@@ -2,6 +2,7 @@ class Lana {}
 const request = require('request');
 const watson_api = require('./watson');
 const b4a = require('./b4a');
+const bothubs = require('./config/bothubs');
 let lana = new Lana();
 
 const sendFinalMessageToEndPoint = (message, endpoint, user) => {
@@ -20,9 +21,9 @@ const sendFinalMessageToEndPoint = (message, endpoint, user) => {
 };
 
 const createNewUserAndProvideFeedBack = (context, message_body) => {
-        const interface = message_body.interface;
-        const user = message_body.user;
-        const interfaceId = `${user.id}`;
+    const interface = message_body.interface;
+    const user = message_body.user;
+    const interfaceId = `${user.id}`;
     b4a.newUser(context.username.substring(1), context.password.substring(1), interface, interfaceId, user.name)
             .then(created_user => {
                 b4a.setUserContext(interface, interfaceId, {}) //Usuario Criado, vou zerar o context dele no b4a
@@ -194,6 +195,73 @@ const handleLocateUserInfo = (answer, message_body) => {
         .catch(get_user_err => reject(get_user_err));
     });
 };
+
+const startServiceAndProvideFeedback = (bothub, service, params, endpoint, user, interface) => {
+    const options = {
+        method : 'POST',
+        uri : bothubs[bothub],
+        body : {
+            'service' : service,
+            'params' : params
+        },
+        json : true
+    };
+    request(options, (err, resp, body) => {
+        if (!resp || resp.statusCode != 200 || err) { //Erro ao executar serviço
+            const bothub_err = {
+                'bothub' : bothub,
+                'service' : service,
+                'params' : params,
+                'user' : user,
+                'body' : body
+            };
+            console.error(JSON.stringify(bothub_err, null, ' '));
+            // sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
+            sendFinalMessageToEndPoint('BOTHUB EM DESENVOLVIMENTO', endpoint, user);
+        }
+        else {
+            if(body.inputError == true) {
+                const interfaceId = `${user.id}`;
+                b4a.getUser(interface, interfaceId)
+                    .then(lana_user => {
+                        body.inputs.forEach(info => {
+                            b4a.unsetUserProp(lana_user.id, info.param)
+                                .catch(err => {
+                                    sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
+                                });
+                        });
+                    })
+                    .catch(err => {
+                        sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
+                    });
+            }
+            sendFinalMessageToEndPoint(body.response, endpoint, user); //Retorna resposta do serviço ao usuario
+        }
+    });
+};
+
+const handleService = (answer, message_body) => {
+    return new Promise(async (resolve, reject) => {
+        const interface = message_body.interface;
+        const user = message_body.user;
+        const interfaceId = `${user.id}`;
+        const endpoint = message_body.messageEndpoint;
+        const context = answer.context;
+        let params = {};
+        context.needs.forEach(info => { //Salvo os parametros necessarios em params para passar pro bothub executar o servico
+            params[info] = context[info];
+            context[info] = null; //Zero os parametros para não interferir em proximos serviços
+        });
+        startServiceAndProvideFeedback(context.bothub, context.intent, params, endpoint, user, interface); //Mando iniciar o servico e sigo em frente sem esperar acabar
+        context.bothub = null; //Zera pedido de serviço pra não refazer chamadas
+        context.intent = null;
+        b4a.setUserContext(interface, interfaceId, context) //Atualizo o context e retorno o feedBack de espera padrão da lana
+            .then(saved_context => {
+                resolve(answer.output.text[0]);
+            })
+            .catch(set_context_err => reject(set_context_err));
+    });
+};
     
 const handleWatsonAnswer = (answer, message_body) => {
     return new Promise((resolve, reject) => {
@@ -218,6 +286,11 @@ const handleWatsonAnswer = (answer, message_body) => {
         }
         else if(answer.context.search_info_first == true) { //Buscar por informações do usuario para realizar um serviço
             handleLocateUserInfo(answer, message_body)
+                .then(lana_message => resolve(lana_message))
+                .catch(lana_err => reject(lana_err));
+        }
+        else if(answer.context.bothub != null) { //Precisa chamar serviço de algum botHUB
+            handleService(answer, message_body)
                 .then(lana_message => resolve(lana_message))
                 .catch(lana_err => reject(lana_err));
         }

@@ -61,6 +61,20 @@ b4a.setUserProp = (userId, propName, propValue) => {
     );
 };
 
+b4a.unsetUserProp = (userId, propName) => {
+    return new Promise((resolve, reject) => 
+        Parse.Cloud.run('unsetUserField', {
+            'userId' : userId,
+            'field' : propName})
+            .then(resp => {
+                resolve(resp.message);
+            })
+            .catch(err => {
+                reject(err);
+            })
+    );
+};
+
 b4a.newUser = (username, password, interface, interfaceId, name) => {
     return new Promise((resolve, reject) => 
         Parse.Cloud.run('registerUser', {

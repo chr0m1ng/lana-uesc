@@ -65,6 +65,31 @@ module.exports.setUserField = (Parse) => {
   };
 };
 
+module.exports.unsetUserField = (Parse) => {
+  return (request, response) => {
+  let userQuery = new Parse.Query(Parse.User);
+  userQuery.equalTo("objectId", request.params.userId);
+  userQuery.first()
+    .then(userToUpdate => {
+      if(userToUpdate !== undefined) {
+        userToUpdate.unset(request.params.field);
+        userToUpdate.save(null, {useMasterKey:true})
+          .then(userToUpdate => {
+            response.success({ code: 200, message: userToUpdate });
+          })
+          .catch(err => {
+            response.error(err);
+          });
+      }
+      else
+        response.error(404, "Usuario não encontrado");
+    })
+    .catch(err => {
+      response.error(err);
+    });
+};
+};
+
 module.exports.registerUser = (Parse) => {
     return (request, response) => {
     if(request.params.username == undefined ||

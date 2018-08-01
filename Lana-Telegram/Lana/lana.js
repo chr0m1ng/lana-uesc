@@ -53,7 +53,7 @@ const fowardMessageToLana = (msg) => {
       interface : 'telegram',
       message : msg.text,
       user : {
-        name : msg.from.first_name + " " + msg.from.last_name,
+        name : `${msg.from.first_name} ${msg.from.last_name}`,
         username : msg.from.username,
         id : msg.from.id,
         chatId : msg.chat.id
@@ -64,12 +64,12 @@ const fowardMessageToLana = (msg) => {
   };
 
   request(options, (err, resp, body) => {
-    if (err) {
+    if (!resp || resp.statusCode != 200 || err) {
       let msgJson = {
         interface : 'telegram',
         type : 'outgoing',
         message : msg.text,
-        errMessage : err,
+        errMessage : body,
         to : {
           chatId : msg.chat.id
         },
@@ -92,36 +92,6 @@ const fowardMessageToLana = (msg) => {
       lana.sendMessage(body.chatId, body.message, {parse_mode: 'Markdown'});
     }
   });
-
-  // request(options)
-  //   .then((parsedBody) => { 
-  //     //Lana will first respond either the final answer or ETA
-  //     let msgJson = {
-  //       interface : 'telegram',
-  //       type : 'outgoing',
-  //       message : messageBody.message,
-  //       to : {
-  //         chatId : messageBody.chatId
-  //       },
-  //       date : new Date()
-  //     };
-  //     console.log(JSON.stringify(msgJson));
-  //     lana.sendMessage(msg.chat.id, messageBody.message, {parse_mode: 'Markdown'});
-  //   })
-  //   .catch(err => {
-  //     let msgJson = {
-  //       interface : 'telegram',
-  //       type : 'outgoing',
-  //       message : msg.text,
-  //       errMessage : err,
-  //       to : {
-  //         chatId : msg.chat.id
-  //       },
-  //       date : new Date()
-  //     };
-  //     console.log(JSON.stringify(msgJson));
-  //     lana.sendMessage(msg.chat.id, 'Ops, algo deu errado, tente novamente');
-  // });
 }
 
 lana.sendMessageEndpoint = (messageBody) => {
@@ -136,10 +106,7 @@ lana.sendMessageEndpoint = (messageBody) => {
       date : new Date()
     };
     console.log(JSON.stringify(msgJson));
-    if(messageBody.parse_mode)
-      lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode: messageBody.parse_mode});
-    else
-      lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode});
+    lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode: 'Markdown'});
     return true;
   }
   else {
