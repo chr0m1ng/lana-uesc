@@ -95,24 +95,42 @@ const fowardMessageToLana = (msg) => {
 }
 
 lana.sendMessageEndpoint = (messageBody) => {
-  if(messageBody.chatId && messageBody.message) {
-    let msgJson = {
-      interface : 'telegram',
-      type : 'outgoing',
-      message : messageBody.message,
-      to : {
-        chatId : messageBody.chatId
-      },
-      date : new Date()
-    };
-    console.log(JSON.stringify(msgJson));
-    lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode: 'Markdown'});
-    return true;
-  }
-  else {
-    console.log("Unable to Send Message Body in Wrong Format");
-    return false;
-  }
+  return new Promise((resolve, reject) => {
+    if(messageBody.chatId && messageBody.message) {
+      let msgJson = {
+        interface : 'telegram',
+        type : 'outgoing',
+        message : messageBody.message,
+        to : {
+          chatId : messageBody.chatId
+        },
+        date : new Date()
+      };
+      console.log(JSON.stringify(msgJson));
+      if(messageBody.type == 'image') {
+        lana.sendPhoto(messageBody.chatId, messageBody.message, {parse_mode: 'Markdown'})
+          .then(res => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      }
+      else {
+        lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode: 'Markdown'})
+          .then(res => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      }
+    }
+    else {
+      console.log("Unable to Send Message Body in Wrong Format");
+      reject();
+    }
+  });
 }
 
 module.exports = lana;

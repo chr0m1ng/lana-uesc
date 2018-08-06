@@ -1,5 +1,6 @@
 {
     "response" : "message",
+    "type" : "text",
     "inputError" : true,
     "inputs" : [
         {"param" : "name", "value" : "value"},

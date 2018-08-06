@@ -3,14 +3,17 @@ const request = require('request');
 const watson_api = require('./watson');
 const b4a = require('./b4a');
 const bothubs = require('./config/bothubs');
+const bothubs_keys = require('./config/keys').bothub_keys;
+
 let lana = new Lana();
 
-const sendFinalMessageToEndPoint = (message, endpoint, user) => {
+const sendFinalMessageToEndPoint = (message, endpoint, user, type='text') => {
     const options = {
         method : 'POST',
         uri : endpoint,
         body : {
             'message' : message,
+            'type' : type,
             'chatId' : `${user.id}`
         },
         json : true
@@ -200,6 +203,9 @@ const startServiceAndProvideFeedback = (bothub, service, params, endpoint, user,
     const options = {
         method : 'POST',
         uri : bothubs[bothub],
+        headers : {
+            'x-api-key': bothubs_keys[bothub]
+        },
         body : {
             'service' : service,
             'params' : params
@@ -216,8 +222,8 @@ const startServiceAndProvideFeedback = (bothub, service, params, endpoint, user,
                 'body' : body
             };
             console.error(JSON.stringify(bothub_err, null, ' '));
-            // sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
-            sendFinalMessageToEndPoint('BOTHUB EM DESENVOLVIMENTO', endpoint, user);
+            sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
+            // sendFinalMessageToEndPoint('BOTHUB EM DESENVOLVIMENTO', endpoint, user);
         }
         else {
             if(body.inputError == true) {
@@ -235,7 +241,7 @@ const startServiceAndProvideFeedback = (bothub, service, params, endpoint, user,
                         sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
                     });
             }
-            sendFinalMessageToEndPoint(body.response, endpoint, user); //Retorna resposta do serviço ao usuario
+            sendFinalMessageToEndPoint(body.response, endpoint, user, body.type); //Retorna resposta do serviço ao usuario
         }
     });
 };

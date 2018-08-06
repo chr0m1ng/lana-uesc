@@ -1,3 +1,3 @@
 module.exports = {
-    "uesc" : 'ENDPOINT'  
+    "uesc" : 'https://bothub-uesc.herokuapp.com/'  
 };

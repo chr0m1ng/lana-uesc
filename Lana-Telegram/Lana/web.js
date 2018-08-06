@@ -22,9 +22,12 @@ module.exports = (lana) => {
     res.sendStatus(200);
   }),
   app.post('/' + lana.token + '/sendMessage', (req, res) => {
-    if(lana.sendMessageEndpoint(req.body))
-      res.sendStatus(200);
-    else
-      res.sendStatus(400);
+    lana.sendMessageEndpoint(req.body)
+      .then(resp => {
+        res.sendStatus(200);
+      })
+      .catch(err => {
+        res.sendStatus(400);
+      });
   })
 };
