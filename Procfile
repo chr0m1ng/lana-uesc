@@ -1,1 +1,1 @@
-web: python bothub_api.py
+worker: python bothub_api.py
