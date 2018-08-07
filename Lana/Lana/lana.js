@@ -7,13 +7,14 @@ const bothubs_keys = require('./config/keys').bothub_keys;
 
 let lana = new Lana();
 
-const sendFinalMessageToEndPoint = (message, endpoint, user, type='text') => {
+const sendFinalMessageToEndPoint = (message, endpoint, user, type='text', markdown=false) => {
     const options = {
         method : 'POST',
         uri : endpoint,
         body : {
             'message' : message,
             'type' : type,
+            'markdown' : markdown,
             'chatId' : `${user.id}`
         },
         json : true
@@ -223,7 +224,6 @@ const startServiceAndProvideFeedback = (bothub, service, params, endpoint, user,
             };
             console.error(JSON.stringify(bothub_err, null, ' '));
             sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
-            // sendFinalMessageToEndPoint('BOTHUB EM DESENVOLVIMENTO', endpoint, user);
         }
         else {
             if(body.inputError == true) {
@@ -268,7 +268,7 @@ const handleService = (answer, message_body) => {
             .catch(set_context_err => reject(set_context_err));
     });
 };
-    
+
 const handleWatsonAnswer = (answer, message_body) => {
     return new Promise((resolve, reject) => {
         const interface = message_body.interface;

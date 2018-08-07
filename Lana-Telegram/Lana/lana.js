@@ -89,7 +89,11 @@ const fowardMessageToLana = (msg) => {
         date : new Date()
       };
       console.log(JSON.stringify(msgJson));
-      lana.sendMessage(body.chatId, body.message, {parse_mode: 'Markdown'});
+      let markdown = {};
+      if(body.markdown) {
+        markdown = {parse_mode: 'Markdown'};
+      }
+      lana.sendMessage(body.chatId, body.message, markdown);
     }
   });
 }
@@ -107,9 +111,13 @@ lana.sendMessageEndpoint = (messageBody) => {
         date : new Date()
       };
       console.log(JSON.stringify(msgJson));
+      let markdown = {};
+      if(messageBody.markdown) {
+        markdown = {parse_mode: 'Markdown'};
+      }
       if(messageBody.type == 'image') {
-        lana.sendPhoto(messageBody.chatId, messageBody.message, {parse_mode: 'Markdown'})
-          .then(res => {
+        lana.sendPhoto(messageBody.chatId, messageBody.message, markdown)
+        .then(res => {
             resolve();
           })
           .catch(err => {
@@ -117,7 +125,7 @@ lana.sendMessageEndpoint = (messageBody) => {
           });
       }
       else {
-        lana.sendMessage(messageBody.chatId, messageBody.message, {parse_mode: 'Markdown'})
+        lana.sendMessage(messageBody.chatId, messageBody.message, markdown)
           .then(res => {
             resolve();
           })
