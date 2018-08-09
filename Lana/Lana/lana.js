@@ -5,7 +5,7 @@ const b4a = require('./b4a');
 const bothubs = require('./config/bothubs');
 const bothubs_keys = require('./config/keys').bothub_keys;
 
-let lana = new Lana();
+const lana = new Lana();
 
 const sendFinalMessageToEndPoint = (message, endpoint, user, type='text', markdown=false) => {
     const options = {
