@@ -1,5 +1,7 @@
 # coding=utf8
 from selenium import webdriver
+import time
+
 
 class Helper():
     def IsSagresDown(self, driver):
@@ -96,4 +98,72 @@ class Helper():
         except:
             return driver, []
         return driver, courses
-            
+
+    def ListCoursesOnTabPortalDoAluno(self, driver):
+        try:
+            titulos = driver.find_elements_by_xpath('//a[contains(@class, "webpart-aluno-nome")]')
+            medias = driver.find_elements_by_xpath('//div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]/strong/span')
+            faltas = driver.find_elements_by_xpath("//div[contains(@class, 'webpart-aluno-links')]/div/a[contains(., 'faltas')]/strong/span")
+            courses = []
+            for i in range(len(titulos)):
+                courses.append({'disciplina' : titulos[i].text, 'media' : medias[i].text, 'faltas' : faltas[i].text})
+        except:
+            return driver, []
+        return driver, courses
+
+    # def ListDisciplineCredits(self, driver, code):
+    #     try:
+    #         mediaXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]' % (code.upper())
+    #         mediaId = driver.find_element_by_xpath(mediaXpath).get_attribute('id')
+    #         driver.execute_script('document.getElementById("%s").click()' % (mediaId))
+    #         while self.IsPageLoaded(driver) == False:
+    #             print('carregando')
+    #         tableXpath = '//div[contains(@class, "boletim-expandido")]/div/div/table/..'
+    #         tableId = driver.find_elements_by_xpath(tableXpath)[0].get_attribute('id')
+    #         driver.execute_script('var script = document.createElement("script");script.type = "text/javascript";script.src = "http://html2canvas.hertzen.com/dist/html2canvas.js";document.head.appendChild(script);')
+    #         time.sleep(5)
+    #         driver.execute_script('html2canvas(document.getElementById("%s")).then(canvas => console.log(canvas.toDataURL()));' % (tableId))
+    #         time.sleep(5)
+    #         print(driver.get_log('browser'))
+    #     except Exception as exc:
+    #         print(exc)
+    #         return driver, []
+    #     return driver, []
+
+    # def IsPageLoaded(self, driver):
+    #     print("Checking if {} page is loaded.".format(driver.current_url))
+    #     page_state = driver.execute_script('return document.readyState;')
+    #     return page_state == 'complete'
+
+    def ListCourseCredits(self, driver, code):
+        try:
+            code = code.upper()
+            course = driver.find_element_by_xpath('//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]' % (code)).text
+            mediaXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]' % (code.upper())
+            mediaId = driver.find_element_by_xpath(mediaXpath).get_attribute('id')
+            driver.execute_script('document.getElementById("%s").click()' % (mediaId))
+            titulos = driver.find_elements_by_xpath('//div[contains(@class, "boletim-expandido")]/div/div/table/tbody/tr/td[@class="ident"]/span')
+            creditos = driver.find_elements_by_xpath('//div[contains(@class, "boletim-expandido")]/div/div/table/tbody/tr/td[@class="txt-center"]/span')
+            notas = []
+            for i in range(len(titulos)):
+                tipo = titulos[i].find_elements_by_xpath('../../preceding-sibling::tr/th')
+                if len(tipo) == 1:
+                    j = 0
+                else:
+                    j = 1
+                notas.append({'curso' : course, 'tipo' : tipo[j].text, 'credito' : titulos[i].text, 'nota' : creditos[i].text})
+        except:
+            return driver, '', True
+        return driver, notas, False
+
+    def GetNoSuchCourseErrorMessage(self, code):
+        return {
+            'response' : 'Não foi possivel encontrar a disciplina %s dentre as já cursadas' % (code),
+            'type' : 'text'
+        }
+    
+    def GetNoCreditsYetForCourseErrorMessage(self, code):
+        return {
+            'response' : 'Ainda não existem notas cadastradas para a disciplina %s' % (code),
+            'type' : 'text'
+        }

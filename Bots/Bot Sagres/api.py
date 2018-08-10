@@ -6,10 +6,10 @@ import os
 
 app = Flask(__name__)
 api = Api(app)
-bot_sagres = Bot()
 
 class Sagres(Resource):
     def post(self):
+        bot_sagres = Bot()
         return bot_sagres.Sagres()
 
 class Sagres_Calcular_CRAA(Resource):
@@ -17,6 +17,7 @@ class Sagres_Calcular_CRAA(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Calcular_CRAA(params)
             else:
                 return 'request fora do padrao', 400
@@ -28,6 +29,7 @@ class Sagres_Horarios_Corrente(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Horarios_Corrente(params)
             else:
                 return 'request fora do padrao', 400
@@ -39,6 +41,7 @@ class Sagres_Listar_Disciplinas(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Listar_Disciplinas(params)
             else:
                 return 'request fora do padrao', 400
@@ -50,6 +53,7 @@ class Sagres_Listar_Disciplinas_Corrente(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Listar_Disciplinas_Corrente(params)
             else:
                 return 'request fora do padrao', 400
@@ -61,6 +65,7 @@ class Sagres_Listar_Faltas(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Listar_Faltas(params)
             else:
                 return 'request fora do padrao', 400
@@ -72,6 +77,7 @@ class Sagres_Listar_Faltas_Disciplina(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params and 'codigo_disciplina' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Listar_Faltas_Disciplina(params)
             else:
                 return 'request fora do padrao', 400
@@ -83,6 +89,7 @@ class Sagres_Listar_Notas(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Listar_Notas(params)
             else:
                 return 'request fora do padrao', 400
@@ -94,6 +101,7 @@ class Sagres_Listar_Notas_Disciplina(Resource):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params and 'codigo_disciplina' in params:
+                bot_sagres = Bot()
                 return bot_sagres.Sagres_Listar_Notas_Disciplina(params)
             else:
                 return 'request fora do padrao', 400
