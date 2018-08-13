@@ -1,0 +1,116 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Api	../Bothubs/UESC/bothub_api.py	/^from flask_restful import Resource, Api$/;"	kind:namespace	line:2
+Api	../Bots/Bot Sagres/api.py	/^from flask_restful import Resource, Api$/;"	kind:namespace	line:2
+BOTS	../Bothubs/UESC/bothub_api.py	/^from config.essential import BOTS, SERVICES$/;"	kind:namespace	line:4
+BOTS	../Bothubs/UESC/config/essential.py	/^BOTS = {$/;"	kind:variable	line:3
+Bot	../Bots/Bot Sagres/api.py	/^from bot_sagres import Bot$/;"	kind:namespace	line:3
+Bot	../Bots/Bot Sagres/bot_sagres.py	/^class Bot():$/;"	kind:class	line:14
+DESIREDCAPS	../Bots/Bot Sagres/bot_sagres.py	/^DESIREDCAPS = DesiredCapabilities.CHROME$/;"	kind:variable	line:9
+DesiredCapabilities	../Bots/Bot Sagres/bot_sagres.py	/^from selenium.webdriver.common.desired_capabilities import DesiredCapabilities    $/;"	kind:namespace	line:4
+Flask	../Bothubs/UESC/bothub_api.py	/^from flask import Flask, request$/;"	kind:namespace	line:1
+Flask	../Bots/Bot Sagres/api.py	/^from flask import Flask, request$/;"	kind:namespace	line:1
+GetGenericErrorMessage	../Bots/Bot Sagres/helper_sagres.py	/^    def GetGenericErrorMessage(self):$/;"	kind:member	line:84
+GetLoginErrorMessage	../Bots/Bot Sagres/helper_sagres.py	/^    def GetLoginErrorMessage(self, user, password):$/;"	kind:member	line:37
+GetNoCreditsYetForCourseErrorMessage	../Bots/Bot Sagres/helper_sagres.py	/^    def GetNoCreditsYetForCourseErrorMessage(self, code):$/;"	kind:member	line:157
+GetNoSuchCourseErrorMessage	../Bots/Bot Sagres/helper_sagres.py	/^    def GetNoSuchCourseErrorMessage(self, code):$/;"	kind:member	line:151
+GetNotAllowedMessage	../Bots/Bot Sagres/helper_sagres.py	/^    def GetNotAllowedMessage(self, user, password, shoudlBe):$/;"	kind:member	line:55
+GetSagresDownMessage	../Bots/Bot Sagres/helper_sagres.py	/^    def GetSagresDownMessage(self):$/;"	kind:member	line:16
+GoToPageDisciplinasCorrente	../Bots/Bot Sagres/helper_sagres.py	/^    def GoToPageDisciplinasCorrente(self, driver):$/;"	kind:member	line:74
+GoToTabPortalDoAluno	../Bots/Bot Sagres/helper_sagres.py	/^    def GoToTabPortalDoAluno(self, driver):$/;"	kind:member	line:66
+Helper	../Bots/Bot Sagres/bot_sagres.py	/^from helper_sagres import Helper$/;"	kind:namespace	line:2
+Helper	../Bots/Bot Sagres/helper_sagres.py	/^class Helper():$/;"	kind:class	line:6
+IsAluno	../Bots/Bot Sagres/helper_sagres.py	/^    def IsAluno(self, driver):$/;"	kind:member	line:48
+IsSagresDown	../Bots/Bot Sagres/helper_sagres.py	/^    def IsSagresDown(self, driver):$/;"	kind:member	line:7
+KEYS	../Bothubs/UESC/bothub_api.py	/^from config.api_keys import KEYS$/;"	kind:namespace	line:3
+KEYS	../Bothubs/UESC/config/api_keys-example.py	/^KEYS = {$/;"	kind:variable	line:3
+KEYS	../Bothubs/UESC/config/api_keys.py	/^KEYS = {$/;"	kind:variable	line:3
+ListCourseCredits	../Bots/Bot Sagres/helper_sagres.py	/^    def ListCourseCredits(self, driver, code):$/;"	kind:member	line:114
+ListCourseFaults	../Bots/Bot Sagres/helper_sagres.py	/^    def ListCourseFaults(self, driver, code):$/;"	kind:member	line:135
+ListCoursesOnPageDisciplinasCorrente	../Bots/Bot Sagres/helper_sagres.py	/^    def ListCoursesOnPageDisciplinasCorrente(self, driver):$/;"	kind:member	line:90
+ListCoursesOnTabPortalDoAluno	../Bots/Bot Sagres/helper_sagres.py	/^    def ListCoursesOnTabPortalDoAluno(self, driver):$/;"	kind:member	line:102
+ListFaultsOnTabPortalDoAluno	../Bots/Bot Sagres/helper_sagres.py	/^    def ListFaultsOnTabPortalDoAluno(self, driver):$/;"	kind:member	line:163
+Login	../Bots/Bot Sagres/helper_sagres.py	/^    def Login(self, driver, user, password):$/;"	kind:member	line:22
+OPTIONS	../Bots/Bot Sagres/bot_sagres.py	/^OPTIONS = webdriver.ChromeOptions()$/;"	kind:variable	line:11
+Resource	../Bothubs/UESC/bothub_api.py	/^from flask_restful import Resource, Api$/;"	kind:namespace	line:2
+Resource	../Bots/Bot Sagres/api.py	/^from flask_restful import Resource, Api$/;"	kind:namespace	line:2
+SERVICES	../Bothubs/UESC/bothub_api.py	/^from config.essential import BOTS, SERVICES$/;"	kind:namespace	line:4
+SERVICES	../Bothubs/UESC/config/essential.py	/^SERVICES = {$/;"	kind:variable	line:10
+Sagres	../Bots/Bot Sagres/api.py	/^class Sagres(Resource):$/;"	kind:class	line:10
+Sagres	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres(self):$/;"	kind:member	line:22
+Sagres_Calcular_CRAA	../Bots/Bot Sagres/api.py	/^class Sagres_Calcular_CRAA(Resource):$/;"	kind:class	line:15
+Sagres_Calcular_CRAA	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Calcular_CRAA(self, params):$/;"	kind:member	line:25
+Sagres_Horarios_Corrente	../Bots/Bot Sagres/api.py	/^class Sagres_Horarios_Corrente(Resource):$/;"	kind:class	line:27
+Sagres_Horarios_Corrente	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Horarios_Corrente(self, params):$/;"	kind:member	line:28
+Sagres_Listar_Disciplinas	../Bots/Bot Sagres/api.py	/^class Sagres_Listar_Disciplinas(Resource):$/;"	kind:class	line:39
+Sagres_Listar_Disciplinas	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Listar_Disciplinas(self, params):$/;"	kind:member	line:31
+Sagres_Listar_Disciplinas_Corrente	../Bots/Bot Sagres/api.py	/^class Sagres_Listar_Disciplinas_Corrente(Resource):$/;"	kind:class	line:51
+Sagres_Listar_Disciplinas_Corrente	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Listar_Disciplinas_Corrente(self, params):$/;"	kind:member	line:61
+Sagres_Listar_Faltas	../Bots/Bot Sagres/api.py	/^class Sagres_Listar_Faltas(Resource):$/;"	kind:class	line:63
+Sagres_Listar_Faltas	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Listar_Faltas(self, params):$/;"	kind:member	line:95
+Sagres_Listar_Faltas_Disciplina	../Bots/Bot Sagres/api.py	/^class Sagres_Listar_Faltas_Disciplina(Resource):$/;"	kind:class	line:75
+Sagres_Listar_Faltas_Disciplina	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Listar_Faltas_Disciplina(self, params):$/;"	kind:member	line:125
+Sagres_Listar_Notas	../Bots/Bot Sagres/api.py	/^class Sagres_Listar_Notas(Resource):$/;"	kind:class	line:87
+Sagres_Listar_Notas	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Listar_Notas(self, params):$/;"	kind:member	line:154
+Sagres_Listar_Notas_Disciplina	../Bots/Bot Sagres/api.py	/^class Sagres_Listar_Notas_Disciplina(Resource):$/;"	kind:class	line:99
+Sagres_Listar_Notas_Disciplina	../Bots/Bot Sagres/bot_sagres.py	/^    def Sagres_Listar_Notas_Disciplina(self, params):$/;"	kind:member	line:157
+StartService	../Bothubs/UESC/bothub_api.py	/^class StartService(Resource):$/;"	kind:class	line:12
+__del__	../Bots/Bot Sagres/bot_sagres.py	/^    def __del__(self):$/;"	kind:member	line:19
+__init__	../Bots/Bot Sagres/bot_sagres.py	/^    def __init__(self):$/;"	kind:member	line:15
+__init__.py	../Bothubs/UESC/config/__init__.py	1;"	kind:file	line:1
+api	../Bothubs/UESC/bothub_api.py	/^api = Api(app)$/;"	kind:variable	line:10
+api	../Bots/Bot Sagres/api.py	/^api = Api(app)$/;"	kind:variable	line:8
+api.py	../Bots/Bot Sagres/api.py	1;"	kind:file	line:1
+api_keys-example.py	../Bothubs/UESC/config/api_keys-example.py	1;"	kind:file	line:1
+api_keys.py	../Bothubs/UESC/config/api_keys.py	1;"	kind:file	line:1
+app	../Bothubs/UESC/bothub_api.py	/^app = Flask(__name__)$/;"	kind:variable	line:9
+app	../Bots/Bot Sagres/api.py	/^app = Flask(__name__)$/;"	kind:variable	line:7
+bot_sagres.py	../Bots/Bot Sagres/bot_sagres.py	1;"	kind:file	line:1
+bothub_api.py	../Bothubs/UESC/bothub_api.py	1;"	kind:file	line:1
+context	../Lana-Watson/Tests/Python/conversation.py	/^    context=mycontext$/;"	kind:variable	line:26
+conversation	../Lana-Watson/Tests/Python/conversation.py	/^conversation = watson_developer_cloud.ConversationV1($/;"	kind:variable	line:5
+conversation.py	../Lana-Watson/Tests/Python/conversation.py	1;"	kind:file	line:1
+essential.py	../Bothubs/UESC/config/essential.py	1;"	kind:file	line:1
+get	../Bothubs/UESC/bothub_api.py	/^    def get(self):$/;"	kind:member	line:13
+helper_sagres.py	../Bots/Bot Sagres/helper_sagres.py	1;"	kind:file	line:1
+input	../Lana-Watson/Tests/Python/conversation.py	/^    input={$/;"	kind:variable	line:13
+input	../Lana-Watson/Tests/Python/conversation.py	/^    input={$/;"	kind:variable	line:23
+json	../Bothubs/UESC/bothub_api.py	/^import json$/;"	kind:namespace	line:6
+json	../Bots/Bot Sagres/api.py	/^import json$/;"	kind:namespace	line:4
+json	../Lana-Watson/Tests/Python/conversation.py	/^import json$/;"	kind:namespace	line:1
+mycontext	../Lana-Watson/Tests/Python/conversation.py	/^mycontext = response['context']$/;"	kind:variable	line:19
+os	../Bothubs/UESC/bothub_api.py	/^import os$/;"	kind:namespace	line:7
+os	../Bots/Bot Sagres/api.py	/^import os$/;"	kind:namespace	line:5
+os	../Lana-Watson/Tests/Python/conversation.py	/^import os$/;"	kind:namespace	line:2
+password	../Lana-Watson/Tests/Python/conversation.py	/^    password=os.environ['watson_PASSWORD'],$/;"	kind:variable	line:7
+port	../Bothubs/UESC/bothub_api.py	/^    port = int(os.environ.get("PORT", 5555))$/;"	kind:variable	line:39
+port	../Bots/Bot Sagres/api.py	/^    port = int(os.environ.get('PORT', 5050))$/;"	kind:variable	line:123
+post	../Bothubs/UESC/bothub_api.py	/^    def post(self):$/;"	kind:member	line:15
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:100
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:11
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:16
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:28
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:40
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:52
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:64
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:76
+post	../Bots/Bot Sagres/api.py	/^    def post(self):$/;"	kind:member	line:88
+re	../Bots/Bot Sagres/helper_sagres.py	/^import re$/;"	kind:namespace	line:4
+request	../Bothubs/UESC/bothub_api.py	/^from flask import Flask, request$/;"	kind:namespace	line:1
+request	../Bots/Bot Sagres/api.py	/^from flask import Flask, request$/;"	kind:namespace	line:1
+requests	../Bothubs/UESC/bothub_api.py	/^import requests$/;"	kind:namespace	line:5
+response	../Lana-Watson/Tests/Python/conversation.py	/^response = conversation.message($/;"	kind:variable	line:11
+response	../Lana-Watson/Tests/Python/conversation.py	/^response = conversation.message($/;"	kind:variable	line:21
+sys	../Bots/Bot Sagres/bot_sagres.py	/^import sys$/;"	kind:namespace	line:5
+time	../Bots/Bot Sagres/helper_sagres.py	/^import time$/;"	kind:namespace	line:3
+username	../Lana-Watson/Tests/Python/conversation.py	/^    username=os.environ['watson_USERNAME'],$/;"	kind:variable	line:6
+version	../Lana-Watson/Tests/Python/conversation.py	/^    version='2018-02-16'$/;"	kind:variable	line:8
+watson_developer_cloud	../Lana-Watson/Tests/Python/conversation.py	/^import watson_developer_cloud$/;"	kind:namespace	line:3
+webdriver	../Bots/Bot Sagres/bot_sagres.py	/^from selenium import webdriver$/;"	kind:namespace	line:3
+webdriver	../Bots/Bot Sagres/helper_sagres.py	/^from selenium import webdriver$/;"	kind:namespace	line:2
+workspace_id	../Lana-Watson/Tests/Python/conversation.py	/^    workspace_id=os.environ['watson_LANA_WORKSPACE_ID'],$/;"	kind:variable	line:12
+workspace_id	../Lana-Watson/Tests/Python/conversation.py	/^    workspace_id=os.environ['watson_LANA_WORKSPACE_ID'],$/;"	kind:variable	line:22

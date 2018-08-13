@@ -93,7 +93,36 @@ class Bot():
             return self.sagres_helper.GetSagresDownMessage()
 
     def Sagres_Listar_Faltas(self, params):
-        return self.Sagres_Listar_Disciplinas(params)
+        self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
+        if status == False:
+            self.driver, status = self.sagres_helper.Login(self.driver, params['sagres_username'], params['sagres_password'])
+            if status == True:
+                self.driver, status = self.sagres_helper.IsAluno(self.driver)
+                if status == True:
+                    self.driver, status = self.sagres_helper.GoToTabPortalDoAluno(self.driver)
+                    print(status)
+                    if status == True:
+                        self.driver, courses = self.sagres_helper.ListFaultsOnTabPortalDoAluno(self.driver)
+                        if courses != []:
+                            response = ''
+                            for course in courses:
+                                response += '• %s\nTotal de Faltas: %s faltas\nLimite de Faltas: %s faltas\n\n' % (course['disciplina'], course['faltas'], course['limite_faltas'])
+                            response = response[:-2]
+                            return {
+                                'response' : response,
+                                'type' : 'text'
+                            }
+                        else:
+                            print(courses)
+                            return self.sagres_helper.GetGenericErrorMessage()
+                    else:
+                        return self.sagres_helper.GetGenericErrorMessage()
+                else:
+                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+            else:
+                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+        else:
+            return self.sagres_helper.GetSagresDownMessage()
 
     def Sagres_Listar_Faltas_Disciplina(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)

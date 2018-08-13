@@ -1,7 +1,7 @@
 # coding=utf8
 from selenium import webdriver
 import time
-
+import re
 
 class Helper():
     def IsSagresDown(self, driver):
@@ -111,30 +111,6 @@ class Helper():
             return driver, []
         return driver, courses
 
-    # def ListDisciplineCredits(self, driver, code):
-    #     try:
-    #         mediaXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]' % (code.upper())
-    #         mediaId = driver.find_element_by_xpath(mediaXpath).get_attribute('id')
-    #         driver.execute_script('document.getElementById("%s").click()' % (mediaId))
-    #         while self.IsPageLoaded(driver) == False:
-    #             print('carregando')
-    #         tableXpath = '//div[contains(@class, "boletim-expandido")]/div/div/table/..'
-    #         tableId = driver.find_elements_by_xpath(tableXpath)[0].get_attribute('id')
-    #         driver.execute_script('var script = document.createElement("script");script.type = "text/javascript";script.src = "http://html2canvas.hertzen.com/dist/html2canvas.js";document.head.appendChild(script);')
-    #         time.sleep(5)
-    #         driver.execute_script('html2canvas(document.getElementById("%s")).then(canvas => console.log(canvas.toDataURL()));' % (tableId))
-    #         time.sleep(5)
-    #         print(driver.get_log('browser'))
-    #     except Exception as exc:
-    #         print(exc)
-    #         return driver, []
-    #     return driver, []
-
-    # def IsPageLoaded(self, driver):
-    #     print("Checking if {} page is loaded.".format(driver.current_url))
-    #     page_state = driver.execute_script('return document.readyState;')
-    #     return page_state == 'complete'
-
     def ListCourseCredits(self, driver, code):
         try:
             code = code.upper()
@@ -183,3 +159,40 @@ class Helper():
             'response' : 'Ainda não existem notas cadastradas para a disciplina %s' % (code),
             'type' : 'text'
         }
+    
+    def ListFaultsOnTabPortalDoAluno(self, driver):
+        try:
+            titulos = driver.find_elements_by_xpath('//a[contains(@class, "webpart-aluno-nome")]')
+            cargas = driver.find_elements_by_xpath('//section[@id="divConteudo"]/div/span[contains(@oldtitle, "Carga horária total")]')
+            faltas = driver.find_elements_by_xpath("//div[contains(@class, 'webpart-aluno-links')]/div/a[contains(., 'faltas')]/strong/span")
+            courses = []
+            for i in range(len(titulos)):
+                cargas[i] = int(re.sub(r'\D', '', cargas[i].get_attribute('innerText')))
+                courses.append({'disciplina' : titulos[i].text, 'limite_faltas' : int((cargas[i] * 25) / 100), 'faltas' : faltas[i].text})
+        except:
+            return driver, []
+        return driver, courses
+
+    # def ListDisciplineCredits(self, driver, code):
+    #     try:
+    #         mediaXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]' % (code.upper())
+    #         mediaId = driver.find_element_by_xpath(mediaXpath).get_attribute('id')
+    #         driver.execute_script('document.getElementById("%s").click()' % (mediaId))
+    #         while self.IsPageLoaded(driver) == False:
+    #             print('carregando')
+    #         tableXpath = '//div[contains(@class, "boletim-expandido")]/div/div/table/..'
+    #         tableId = driver.find_elements_by_xpath(tableXpath)[0].get_attribute('id')
+    #         driver.execute_script('var script = document.createElement("script");script.type = "text/javascript";script.src = "http://html2canvas.hertzen.com/dist/html2canvas.js";document.head.appendChild(script);')
+    #         time.sleep(5)
+    #         driver.execute_script('html2canvas(document.getElementById("%s")).then(canvas => console.log(canvas.toDataURL()));' % (tableId))
+    #         time.sleep(5)
+    #         print(driver.get_log('browser'))
+    #     except Exception as exc:
+    #         print(exc)
+    #         return driver, []
+    #     return driver, []
+
+    # def IsPageLoaded(self, driver):
+    #     print("Checking if {} page is loaded.".format(driver.current_url))
+    #     page_state = driver.execute_script('return document.readyState;')
+    #     return page_state == 'complete'
