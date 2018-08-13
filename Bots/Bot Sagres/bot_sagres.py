@@ -16,6 +16,9 @@ class Bot():
         self.driver = webdriver.Chrome(chrome_options=OPTIONS, desired_capabilities=DESIREDCAPS)
         self.sagres_helper = Helper()
 
+    def __del__(self):
+        self.driver.quit()
+
     def Sagres(self):
         return 'ABOUT'
 
@@ -93,7 +96,33 @@ class Bot():
         return self.Sagres_Listar_Disciplinas(params)
 
     def Sagres_Listar_Faltas_Disciplina(self, params):
-        return 'ok'
+        self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
+        if status == False:
+            self.driver, status = self.sagres_helper.Login(self.driver, params['sagres_username'], params['sagres_password'])
+            if status == True:
+                self.driver, status = self.sagres_helper.IsAluno(self.driver)
+                if status == True:
+                    self.driver, status = self.sagres_helper.GoToTabPortalDoAluno(self.driver)
+                    if status == True:
+                        self.driver, faults, err = self.sagres_helper.ListCourseFaults(self.driver, params['codigo_disciplina'])
+                        if err == False and type(faults) == type({}) and faults != {}:
+                            response = '%s\n• %s' % (faults['curso'], faults['faltas_e_limite'])
+                            return {
+                                'response' : response,
+                                'type' : 'text'
+                            }
+                        elif err == True:
+                            return self.sagres_helper.GetNoSuchCourseErrorMessage(params['codigo_disciplina'])
+                        else:
+                            return self.sagres_helper.GetGenericErrorMessage()
+                    else:
+                        return self.sagres_helper.GetGenericErrorMessage()
+                else:
+                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+            else:
+                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+        else:
+            return self.sagres_helper.GetSagresDownMessage()
 
     def Sagres_Listar_Notas(self, params):
         return self.Sagres_Listar_Disciplinas(params)

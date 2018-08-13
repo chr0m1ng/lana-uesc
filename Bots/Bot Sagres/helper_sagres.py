@@ -156,6 +156,22 @@ class Helper():
             return driver, '', True
         return driver, notas, False
 
+    def ListCourseFaults(self, driver, code):
+        try:
+            code = code.upper()
+            course = driver.find_element_by_xpath('//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]' % (code)).text
+            faltasXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(., "faltas")]' % (code.upper())
+            faltasId = driver.find_element_by_xpath(faltasXpath).get_attribute('id')
+            driver.execute_script('document.getElementById("%s").click()' % (faltasId))
+            totalAndLimitMessage = driver.find_element_by_xpath('//div[contains(@class, "boletim-expandido")]/div[contains(@class, "boletim-frequencia")]/div/div[contains(@class, "boletim-frequencia-total")]').get_attribute('innerText')
+            faults = {
+                'curso' : course,
+                'faltas_e_limite': totalAndLimitMessage
+            }
+        except:
+            return driver, '', True
+        return driver, faults, False
+
     def GetNoSuchCourseErrorMessage(self, code):
         return {
             'response' : 'Não foi possivel encontrar a disciplina %s dentre as já cursadas' % (code),
