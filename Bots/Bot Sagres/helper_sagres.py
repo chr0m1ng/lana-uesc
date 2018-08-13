@@ -1,6 +1,8 @@
 # coding=utf8
 from selenium import webdriver
+import requests
 import time
+import json
 import re
 
 class Helper():
@@ -21,7 +23,6 @@ class Helper():
 
     def Login(self, driver, user, password):
         try:
-            driver.get('http://www.prograd.uesc.br/PortalSagres/Acesso.aspx')
             input_login = driver.find_elements_by_class_name('input-login') #Campo login [0] Campo senha [1]
             input_login[0].send_keys(user)
             input_login[1].send_keys(password)
@@ -173,6 +174,27 @@ class Helper():
             return driver, []
         return driver, courses
 
+    def ListAvgOnTabPortalDoAluno(self, driver):
+        try:
+            titulos = driver.find_elements_by_xpath('//a[contains(@class, "webpart-aluno-nome")]')
+            medias = driver.find_elements_by_xpath('//div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]/strong/span')
+            courses = []
+            for i in range(len(titulos)):
+                courses.append({'disciplina' : titulos[i].text, 'media' : medias[i].text})
+        except:
+            return driver, []
+        return driver, courses
+
+    def CalculateCRAA(self, driver):
+        try:
+            driver.get('http://www.prograd.uesc.br/PortalSagres/Modules/Diario/Aluno/Relatorio/HistoricoEscolar.aspx')
+            historico_url = driver.find_element_by_xpath('//iframe[@embedded="pdf"]').get_attribute('src')
+            r = requests.post('http://semipronet.me/api/check_craa', json = {'url' : historico_url})
+            resp = r.json()
+            craa = resp['craa']
+        except:
+            return driver, ''
+        return driver, craa
     # def ListDisciplineCredits(self, driver, code):
     #     try:
     #         mediaXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]' % (code.upper())
