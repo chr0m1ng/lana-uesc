@@ -1,11 +1,16 @@
 # coding=utf8
 from selenium import webdriver
+from imgur_api import ImgurAPI
+from config.keys import IMGUR_CLIENT_ID
 import requests
 import time
 import json
 import re
 
 class Helper():
+    def __init__(self):
+        self.imgurAPI = ImgurAPI(IMGUR_CLIENT_ID)
+
     def IsSagresDown(self, driver):
         try:
             driver.get('http://www.prograd.uesc.br/PortalSagres/Acesso.aspx')
@@ -195,26 +200,26 @@ class Helper():
         except:
             return driver, ''
         return driver, craa
-    # def ListDisciplineCredits(self, driver, code):
-    #     try:
-    #         mediaXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]' % (code.upper())
-    #         mediaId = driver.find_element_by_xpath(mediaXpath).get_attribute('id')
-    #         driver.execute_script('document.getElementById("%s").click()' % (mediaId))
-    #         while self.IsPageLoaded(driver) == False:
-    #             print('carregando')
-    #         tableXpath = '//div[contains(@class, "boletim-expandido")]/div/div/table/..'
-    #         tableId = driver.find_elements_by_xpath(tableXpath)[0].get_attribute('id')
-    #         driver.execute_script('var script = document.createElement("script");script.type = "text/javascript";script.src = "http://html2canvas.hertzen.com/dist/html2canvas.js";document.head.appendChild(script);')
-    #         time.sleep(5)
-    #         driver.execute_script('html2canvas(document.getElementById("%s")).then(canvas => console.log(canvas.toDataURL()));' % (tableId))
-    #         time.sleep(5)
-    #         print(driver.get_log('browser'))
-    #     except Exception as exc:
-    #         print(exc)
-    #         return driver, []
-    #     return driver, []
 
-    # def IsPageLoaded(self, driver):
-    #     print("Checking if {} page is loaded.".format(driver.current_url))
-    #     page_state = driver.execute_script('return document.readyState;')
-    #     return page_state == 'complete'
+    def GetSemesterSchedule(self, driver):
+        try:
+            horariosXpath = '//span[contains(., "Meus Horários")]/../../../../../../../..'
+            horariosClass = driver.find_element_by_xpath(horariosXpath).get_attribute('class')
+            #Injetando Html2Canvas na pagina
+            driver.execute_script('var script = document.createElement("script");script.type = "text/javascript";script.src = "http://html2canvas.hertzen.com/dist/html2canvas.js";document.head.appendChild(script);')
+            time.sleep(5)
+            #Transformando o html em canvas e em base64
+            driver.execute_script('html2canvas(document.getElementsByClassName("%s")[0]).then(canvas => console.log(canvas.toDataURL()))' % horariosClass)
+            time.sleep(5)
+            log = driver.get_log('browser')
+            startBase64 = log[-1]['message'].find(',') + 1
+            horarioBase64 = log[-1]['message'][startBase64:-1]
+            resp = self.imgurAPI.upload_image_base64(horarioBase64)
+            if resp['error'] == False:
+                horarioURL = resp['link']
+            else:
+                return driver, ''
+        except Exception as exc:
+            print(exc)
+            return driver, ''
+        return driver, horarioURL

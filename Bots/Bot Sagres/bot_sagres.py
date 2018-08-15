@@ -1,5 +1,5 @@
 # coding=utf8
-from helper_sagres import Helper
+from helpers.helper_sagres import Helper
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities    
 import sys
@@ -45,7 +45,22 @@ class Bot():
             return self.sagres_helper.GetSagresDownMessage()
 
     def Sagres_Horarios_Corrente(self, params):
-        return 'ok'
+        self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
+        if status == False:
+            self.driver, status = self.sagres_helper.Login(self.driver, params['sagres_username'], params['sagres_password'])
+            if status == True:
+                self.driver, schedule_url = self.sagres_helper.GetSemesterSchedule(self.driver)
+                if schedule_url != '':
+                    return {
+                        'response' : schedule_url,
+                        'type' : 'image'
+                    }
+                else:
+                    return self.sagres_helper.GetGenericErrorMessage()
+            else:
+                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+        else:
+            return self.sagres_helper.GetSagresDownMessage()
 
     def Sagres_Listar_Disciplinas(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -236,10 +251,10 @@ class Bot():
 
 # if __name__ == '__main__':
 #     bot = Bot()
+#     bot.driver, res = bot.sagres_helper.IsSagresDown(bot.driver)
+#     print (res)
 #     bot.driver, res = bot.sagres_helper.Login(bot.driver, 'grsantos13', '201420374')
 #     print (res)
-#     bot.driver, res = bot.sagres_helper.GoToTabPortalDoAluno(bot.driver)
-#     print (res)
-#     bot.driver, res = bot.sagres_helper.ListCourseCredits(bot.driver, 'cet098')
+#     bot.driver, res = bot.sagres_helper.GetSemesterSchedule(bot.driver)
 #     print (res)
 #     bot.driver.quit()
