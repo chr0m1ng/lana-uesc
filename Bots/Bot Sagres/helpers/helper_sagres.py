@@ -35,7 +35,11 @@ class Helper():
             try: #Testa se conseguiu fazer o login verificando se existe o nome no canto superior esquerdo
                 driver.find_element_by_class_name('usuario-nome').text
             except:
-                return driver, False
+                try: #Pode ser professor, deve apertar botão 'Acessar Portal Sagres'
+                    driver.find_element_by_id('ctl00_btnLogin').click()
+                except:
+                    return driver, False
+                return driver, True
         except:
             return driver, False
         return driver, True
@@ -53,7 +57,7 @@ class Helper():
 
     def IsAluno(self, driver):
         try:
-            driver.find_element_by_xpath("//span[@oldtitle='Minhas Turmas']")
+            driver.find_element_by_xpath('//span[@oldtitle="Minhas Turmas"]')
         except:
             return driver, False
         return driver, True
@@ -223,3 +227,5 @@ class Helper():
             print(exc)
             return driver, ''
         return driver, horarioURL
+
+    

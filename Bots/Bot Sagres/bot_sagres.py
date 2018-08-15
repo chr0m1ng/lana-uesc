@@ -249,6 +249,12 @@ class Bot():
         else:
             return self.sagres_helper.GetSagresDownMessage()
 
+    def Sagres_Listar_Turmas(self, params):
+        return 'OK'
+
+    def Sagres_Listar_Alunos_Turmas(self, params):
+        return 'OK'
+        
 # if __name__ == '__main__':
 #     bot = Bot()
 #     bot.driver, res = bot.sagres_helper.IsSagresDown(bot.driver)

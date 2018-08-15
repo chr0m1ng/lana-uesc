@@ -108,7 +108,30 @@ class Sagres_Listar_Notas_Disciplina(Resource):
         else:
             return 'request fora do padrao', 400
 
+class Sagres_Listar_Turmas(Resource):
+    def post(self):
+        if 'params' in request.json:
+            params = request.json['params']
+            if 'sagres_username' in params and 'sagres_password' in params and 'codigo_disciplina' in params:
+                bot_sagres = Bot()
+                return bot_sagres.Sagres_Listar_Turmas(params)
+            else:
+                return 'request fora do padrao', 400
+        else:
+            return 'request fora do padrao', 400
         
+class Sagres_Listar_Alunos_Turma(Resource):
+    def post(self):
+        if 'params' in request.json:
+            params = request.json['params']
+            if 'sagres_username' in params and 'sagres_password' in params and 'codigo_disciplina' in params:
+                bot_sagres = Bot()
+                return bot_sagres.Sagres_Listar_Alunos_Turma(params)
+            else:
+                return 'request fora do padrao', 400
+        else:
+            return 'request fora do padrao', 400
+
 api.add_resource(Sagres, '/sagres')
 api.add_resource(Sagres_Calcular_CRAA, '/sagres_calcular_craa')
 api.add_resource(Sagres_Horarios_Corrente, '/sagres_horarios_corrente')
@@ -118,6 +141,8 @@ api.add_resource(Sagres_Listar_Faltas, '/sagres_listar_faltas')
 api.add_resource(Sagres_Listar_Faltas_Disciplina, '/sagres_listar_faltas_disciplina')
 api.add_resource(Sagres_Listar_Notas, '/sagres_listar_notas')
 api.add_resource(Sagres_Listar_Notas_Disciplina, '/sagres_listar_notas_disciplina')
+api.add_resource(Sagres_Listar_Turmas, '/sagres_listar_turmas')
+api.add_resource(Sagres_Listar_Alunos_Turma, '/sagres_listar_alunos_turmas')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))

@@ -17,6 +17,8 @@ SERVICES = {
     'sagres_listar_faltas_disciplina' : 'bot_sagres',
     'sagres_listar_notas' : 'bot_sagres',
     'sagres_listar_notas_disciplina' : 'bot_sagres',
+    'sagres_listar_turmas' : 'bot_sagres',
+    'sagres_listar_alunos_turmas' : 'bot_sagres',
     'uesc' : 'bot_uesc',
     'uesc_listar_cursos' : 'bot_uesc',
     'uesc_listar_departamentos' : 'bot_uesc',
