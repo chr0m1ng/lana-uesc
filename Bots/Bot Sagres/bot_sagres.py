@@ -7,20 +7,19 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import sys
 import os
 
-# reload(sys)
-# sys.setdefaultencoding("utf-8")
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 
-# DESIREDCAPS = DesiredCapabilities.CHROME
-# DESIREDCAPS ['loggingPrefs'] = { 'browser':'ALL' }
+DESIREDCAPS = DesiredCapabilities.CHROME
+DESIREDCAPS ['loggingPrefs'] = { 'browser':'ALL' }
 OPTIONS = webdriver.ChromeOptions()
 OPTIONS.add_argument('--headless')
 OPTIONS.add_argument('--no-sandbox')
-OPTIONS.binary_location = os.environ['GOOGLE_CHROME_BIN']
 
 class Bot():
     def __init__(self):
-        self.driver = webdriver.Chrome(chrome_options=OPTIONS)
+        self.driver = webdriver.Chrome(chrome_options=OPTIONS, desired_capabilities=DESIREDCAPS)
         self.sagres_helper = Helper()
         self.error_strings = ErrorStrings()
         self.general_strings = GeneralStrings()
