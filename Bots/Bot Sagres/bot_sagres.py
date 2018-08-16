@@ -95,7 +95,7 @@ class Bot():
                     else:
                         return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.Sagres_Listar_Turmas_Corrente(params) #Caso seja professor vou listar as materias ministradas
             else:
                 return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
@@ -129,7 +129,7 @@ class Bot():
                     else:
                         return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.Sagres_Listar_Turmas_Corrente(params) #Caso seja um professor vou listas as materias ministradas
             else:
                 return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
