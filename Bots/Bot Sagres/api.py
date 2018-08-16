@@ -1,8 +1,11 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
-from bot_sagres import Bot
 import json
 import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), 'helpers'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'helpers/config'))
+from bot_sagres import Bot
 
 app = Flask(__name__)
 api = Api(app)
@@ -108,13 +111,13 @@ class Sagres_Listar_Notas_Disciplina(Resource):
         else:
             return 'request fora do padrao', 400
 
-class Sagres_Listar_Turmas(Resource):
+class Sagres_Listar_Turmas_Corrente(Resource):
     def post(self):
         if 'params' in request.json:
             params = request.json['params']
             if 'sagres_username' in params and 'sagres_password' in params and 'codigo_disciplina' in params:
                 bot_sagres = Bot()
-                return bot_sagres.Sagres_Listar_Turmas(params)
+                return bot_sagres.Sagres_Listar_Turmas_Corrente(params)
             else:
                 return 'request fora do padrao', 400
         else:
@@ -141,7 +144,7 @@ api.add_resource(Sagres_Listar_Faltas, '/sagres_listar_faltas')
 api.add_resource(Sagres_Listar_Faltas_Disciplina, '/sagres_listar_faltas_disciplina')
 api.add_resource(Sagres_Listar_Notas, '/sagres_listar_notas')
 api.add_resource(Sagres_Listar_Notas_Disciplina, '/sagres_listar_notas_disciplina')
-api.add_resource(Sagres_Listar_Turmas, '/sagres_listar_turmas')
+api.add_resource(Sagres_Listar_Turmas_Corrente, '/sagres_listar_turmas_corrente')
 api.add_resource(Sagres_Listar_Alunos_Turma, '/sagres_listar_alunos_turmas')
 
 if __name__ == '__main__':

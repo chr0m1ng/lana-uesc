@@ -20,12 +20,6 @@ class Helper():
             return driver, True
         return driver, False
 
-    def GetSagresDownMessage(self):
-        return {
-            'response' : 'O Portal Sagres está fora do ar',
-            'type' : 'text'
-        }
-
     def Login(self, driver, user, password):
         try:
             input_login = driver.find_elements_by_class_name('input-login') #Campo login [0] Campo senha [1]
@@ -44,34 +38,12 @@ class Helper():
             return driver, False
         return driver, True
 
-    def GetLoginErrorMessage(self, user, password):
-        return {
-                    'response' : 'O usuario ou a senha do Portal Sagres passados estão incorretos',
-                    'type' : 'text',
-                    'inputError' : True,
-                    'inputs' : [
-                        {'param': 'sagres_username', 'value' : user},
-                        {'param': 'sagres_password', 'value' : password}
-                    ]
-                }
-
     def IsAluno(self, driver):
         try:
             driver.find_element_by_xpath('//span[@oldtitle="Minhas Turmas"]')
         except:
             return driver, False
         return driver, True
-
-    def GetNotAllowedMessage(self, user, password, shoudlBe):
-        return {
-            'response' : 'Esta funcionalidade só é permitido para %s' % (shoudlBe),
-            'type' : 'text',
-            'inputError' : True,
-            'inputs' : [
-                {'param': 'sagres_username', 'value' : user},
-                {'param': 'sagres_password', 'value' : password}
-            ]
-        }
 
     def GoToTabPortalDoAluno(self, driver):
         try:
@@ -90,12 +62,6 @@ class Helper():
                 return driver, False
         except:
             return driver, False
-
-    def GetGenericErrorMessage(self):
-        return {
-            'response' : 'Erro interno ao tentar acessar recurso do sagres',
-            'type' : 'text'
-        }
     
     def ListCoursesOnPageDisciplinasCorrente(self, driver):
         try:
@@ -157,18 +123,6 @@ class Helper():
         except:
             return driver, '', True
         return driver, faults, False
-
-    def GetNoSuchCourseErrorMessage(self, code):
-        return {
-            'response' : 'Não foi possivel encontrar a disciplina %s dentre as já cursadas' % (code),
-            'type' : 'text'
-        }
-    
-    def GetNoCreditsYetForCourseErrorMessage(self, code):
-        return {
-            'response' : 'Ainda não existem notas cadastradas para a disciplina %s' % (code),
-            'type' : 'text'
-        }
     
     def ListFaultsOnTabPortalDoAluno(self, driver):
         try:
@@ -228,4 +182,30 @@ class Helper():
             return driver, ''
         return driver, horarioURL
 
-    
+    def GoToTabPortalDoProfessor(self, driver):
+        try:
+            driver.get('http://www.prograd.uesc.br/PortalSagres/Modules/Diario/Professor/Default.aspx')
+            driver.find_element_by_class_name('controle-menu-txt') #Troca de pagina e tenta achar botão 'menu' do canto esquerdo que so aparece em portal do aluno
+        except:
+            return driver, False
+        return driver, True
+
+    def ListClassesCorrenteOnTabPortalDoProfessor(self, driver):
+        try:
+            classes_nodes = driver.find_elements_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span')
+            classes = []
+            for classe in classes_nodes:
+                classes.append({'class' : classe.text()})
+        except:
+            return driver, []
+        return driver, classes
+
+    def ListStudentsClassOnTabPortalDoProfessor(self, driver, code):
+        try:
+            code = code.upper()
+            class_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(., "(T")]' % (code))
+            students_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(text(), "(T")]/../../div[@class="webpart-classe-detalhes"]/span[contains(., "Alunos")]' % (code))
+            classe = {'class' : class_node.text(), 'students' : students_node.get_attribute('innerText')}
+        except:
+            return driver, {}
+        return driver, classe

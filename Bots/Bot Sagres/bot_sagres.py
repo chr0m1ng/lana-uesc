@@ -1,26 +1,35 @@
 # coding=utf8
 from helpers.helper_sagres import Helper
+from helpers.strings import ErrorStrings, GeneralStrings
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities    
+# from importlib import reload
 import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
+import os
 
-DESIREDCAPS = DesiredCapabilities.CHROME
-DESIREDCAPS ['loggingPrefs'] = { 'browser':'ALL' }
+# reload(sys)
+# sys.setdefaultencoding("utf-8")
+
+
+# DESIREDCAPS = DesiredCapabilities.CHROME
+# DESIREDCAPS ['loggingPrefs'] = { 'browser':'ALL' }
 OPTIONS = webdriver.ChromeOptions()
-OPTIONS.add_argument('headless')
+OPTIONS.add_argument('--headless')
+OPTIONS.add_argument('--no-sandbox')
+OPTIONS.binary_location = os.environ['GOOGLE_CHROME_BIN']
 
 class Bot():
     def __init__(self):
-        self.driver = webdriver.Chrome(chrome_options=OPTIONS, desired_capabilities=DESIREDCAPS)
+        self.driver = webdriver.Chrome(chrome_options=OPTIONS)
         self.sagres_helper = Helper()
+        self.error_strings = ErrorStrings()
+        self.general_strings = GeneralStrings()
 
     def __del__(self):
         self.driver.quit()
 
     def Sagres(self):
-        return 'ABOUT'
+        return self.general_strings.GetAboutSagresMessage()
 
     def Sagres_Calcular_CRAA(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -36,13 +45,13 @@ class Bot():
                             'type' : 'text'
                         }
                     else:
-                        return self.sagres_helper.GetGenericErrorMessage()
+                        return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
     def Sagres_Horarios_Corrente(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -56,11 +65,11 @@ class Bot():
                         'type' : 'image'
                     }
                 else:
-                    return self.sagres_helper.GetGenericErrorMessage()
+                    return self.error_strings.GetGenericErrorMessage()
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
     def Sagres_Listar_Disciplinas(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -82,15 +91,15 @@ class Bot():
                                 'type' : 'text'
                             }
                         else:
-                            return self.sagres_helper.GetGenericErrorMessage()
+                            return self.error_strings.GetGenericErrorMessage()
                     else:
-                        return self.sagres_helper.GetGenericErrorMessage()
+                        return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
     def Sagres_Listar_Disciplinas_Corrente(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -116,15 +125,15 @@ class Bot():
                                 'type' : 'text'
                             }
                         else:
-                            return self.sagres_helper.GetGenericErrorMessage()
+                            return self.error_strings.GetGenericErrorMessage()
                     else:
-                        return self.sagres_helper.GetGenericErrorMessage()
+                        return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
     def Sagres_Listar_Faltas(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -148,15 +157,15 @@ class Bot():
                             }
                         else:
                             print(courses)
-                            return self.sagres_helper.GetGenericErrorMessage()
+                            return self.error_strings.GetGenericErrorMessage()
                     else:
-                        return self.sagres_helper.GetGenericErrorMessage()
+                        return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
     def Sagres_Listar_Faltas_Disciplina(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -175,17 +184,17 @@ class Bot():
                                 'type' : 'text'
                             }
                         elif err == True:
-                            return self.sagres_helper.GetNoSuchCourseErrorMessage(params['codigo_disciplina'])
+                            return self.error_strings.GetNoSuchCourseErrorMessage(params['codigo_disciplina'])
                         else:
-                            return self.sagres_helper.GetGenericErrorMessage()
+                            return self.error_strings.GetGenericErrorMessage()
                     else:
-                        return self.sagres_helper.GetGenericErrorMessage()
+                        return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
     def Sagres_Listar_Notas(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -207,15 +216,15 @@ class Bot():
                                 'type' : 'text'
                             }
                         else:
-                            return self.sagres_helper.GetGenericErrorMessage()
+                            return self.error_strings.GetGenericErrorMessage()
                     else:
-                        return self.sagres_helper.GetGenericErrorMessage()
+                        return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
     def Sagres_Listar_Notas_Disciplina(self, params):
         self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
@@ -237,30 +246,70 @@ class Bot():
                                 'type' : 'text'
                             }
                         elif err == True:
-                            return self.sagres_helper.GetNoSuchCourseErrorMessage(params['codigo_disciplina'])
+                            return self.error_strings.GetNoSuchCourseErrorMessage(params['codigo_disciplina'])
                         else:
-                            return self.sagres_helper.GetNoCreditsYetForCourseErrorMessage(params['codigo_disciplina'])
+                            return self.error_strings.GetNoCreditsYetForCourseErrorMessage(params['codigo_disciplina'])
                     else:
-                        return self.sagres_helper.GetGenericErrorMessage()
+                        return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.sagres_helper.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
             else:
-                return self.sagres_helper.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
-            return self.sagres_helper.GetSagresDownMessage()
+            return self.error_strings.GetSagresDownMessage()
 
-    def Sagres_Listar_Turmas(self, params):
-        return 'OK'
+    def Sagres_Listar_Turmas_Corrente(self, params):
+        self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
+        if status == False:
+            self.driver, status = self.sagres_helper.Login(self.driver, params['sagres_username'], params['sagres_password'])
+            if status == True:
+                self.driver, status = self.sagres_helper.IsAluno(self.driver)
+                if status == False:
+                    self.driver, status = self.sagres_helper.GoToTabPortalDoProfessor(self.driver)
+                    if status == True:
+                        self.driver, classes = self.sagres_helper.ListClassesCorrenteOnTabPortalDoProfessor(self.driver)
+                        if classes != []:
+                            response = ''
+                            for classe in classes:
+                                response += '• %s\n\n' % (classe['class'])
+                            response = response[:-2]
+                            return {
+                                'response' : response,
+                                'type' : 'text'
+                            }
+                        else:
+                            return self.error_strings.GetGenericErrorMessage()
+                    else:
+                        return self.error_strings.GetGenericErrorMessage()
+                else:
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'professor')
+            else:
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+        else:
+            return self.error_strings.GetSagresDownMessage()
 
-    def Sagres_Listar_Alunos_Turmas(self, params):
-        return 'OK'
-        
-# if __name__ == '__main__':
-#     bot = Bot()
-#     bot.driver, res = bot.sagres_helper.IsSagresDown(bot.driver)
-#     print (res)
-#     bot.driver, res = bot.sagres_helper.Login(bot.driver, 'grsantos13', '201420374')
-#     print (res)
-#     bot.driver, res = bot.sagres_helper.GetSemesterSchedule(bot.driver)
-#     print (res)
-#     bot.driver.quit()
+    def Sagres_Listar_Alunos_Turma(self, params):
+        self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
+        if status == False:
+            self.driver, status = self.sagres_helper.Login(self.driver, params['sagres_username'], params['sagres_password'])
+            if status == True:
+                self.driver, status = self.sagres_helper.IsAluno(self.driver)
+                if status == False:
+                    self.driver, status = self.sagres_helper.GoToTabPortalDoProfessor(self.driver)
+                    if status == True:
+                        self.driver, classe = self.sagres_helper.ListStudentsClassOnTabPortalDoProfessor(self.driver, params['codigo_disciplina'])
+                        if classe != {}:
+                            return {
+                                'response' : '%s\n• %s' % (classe['class'], classe['students']),
+                                'type' : 'text'
+                            }
+                        else:
+                            return self.error_strings.GetNoSuchClassErrorMessage(params['codigo_disciplina'])
+                    else:
+                        return self.error_strings.GetGenericErrorMessage()
+                else:
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'aluno')
+            else:
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+        else:
+            return self.error_strings.GetSagresDownMessage()
