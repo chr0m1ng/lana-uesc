@@ -26,7 +26,8 @@ class StartService(Resource):
                     response = requests.post('%s/%s' % (bot_url, service), json = {'params' : params})
                     return response.json()
                     # return { "response" : "BOTHUB EM DESENVOLVIMENTO", "type" : "text"}
-                except KeyError:
+                except KeyError as exc:
+                    print (exc)
                     return 'servico nao encontrado no bothub', 404
             else:
                 return 'request fora do padrao', 400
