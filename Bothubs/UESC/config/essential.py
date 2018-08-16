@@ -2,7 +2,7 @@
 #### Endereços de bots disponveis neste bothub [bot] = endpoint
 BOTS = {
     'bot_sagres' : 'http://127.0.0.1:5050',
-    'bot_uesc' : 'http://127.0.0.1:5050',
+    'bot_uesc' : 'http://botsagres.semipronet.me',
     'bot_transparencia' : 'http://127.0.0.1:5050'
 }
 
