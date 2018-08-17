@@ -16,32 +16,39 @@ class Helper():
             driver.get('http://www.prograd.uesc.br/PortalSagres/Acesso.aspx')
             if driver.find_elements_by_class_name('label-padrao') == []:
                 return driver, True
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, True
         return driver, False
 
     def Login(self, driver, user, password):
         try:
+            user = user[1:]
+            password = password[1:]
             input_login = driver.find_elements_by_class_name('input-login') #Campo login [0] Campo senha [1]
             input_login[0].send_keys(user)
             input_login[1].send_keys(password)
             driver.find_element_by_id('ctl00_PageContent_LoginPanel_LoginButton').click() #Clica para entrar
             try: #Testa se conseguiu fazer o login verificando se existe o nome no canto superior esquerdo
                 driver.find_element_by_class_name('usuario-nome').text
-            except:
+            except Exception as exc:
+                print (exc)
                 try: #Pode ser professor, deve apertar botão 'Acessar Portal Sagres'
                     driver.find_element_by_id('ctl00_btnLogin').click()
-                except:
+                except Exception as exc:
+                    print (exc)
                     return driver, False
                 return driver, True
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, False
         return driver, True
 
     def IsAluno(self, driver):
         try:
             driver.find_element_by_xpath('//span[@oldtitle="Minhas Turmas"]')
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, False
         return driver, True
 
@@ -49,7 +56,8 @@ class Helper():
         try:
             driver.get('http://www.prograd.uesc.br/PortalSagres/Modules/Diario/Aluno/Default.aspx')
             driver.find_element_by_class_name('controle-menu-txt') #Troca de pagina e tenta achar botão 'menu' do canto esquerdo que so aparece em portal do aluno
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, False
         return driver, True
 
@@ -60,7 +68,8 @@ class Helper():
                 return driver, True
             else:
                 return driver, False
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, False
     
     def ListCoursesOnPageDisciplinasCorrente(self, driver):
@@ -71,7 +80,8 @@ class Helper():
             courses = []
             for i in range(len(titulos)):
                 courses.append({'disciplina' : titulos[i].text, 'media' : medias[i].text, 'faltas' : faltas[i].text})
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, []
         return driver, courses
 
@@ -83,7 +93,8 @@ class Helper():
             courses = []
             for i in range(len(titulos)):
                 courses.append({'disciplina' : titulos[i].text, 'media' : medias[i].text, 'faltas' : faltas[i].text})
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, []
         return driver, courses
 
@@ -104,7 +115,8 @@ class Helper():
                 else:
                     j = 1
                 notas.append({'curso' : course, 'tipo' : tipo[j].text, 'credito' : titulos[i].text, 'nota' : creditos[i].text})
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, '', True
         return driver, notas, False
 
@@ -120,7 +132,8 @@ class Helper():
                 'curso' : course,
                 'faltas_e_limite': totalAndLimitMessage
             }
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, '', True
         return driver, faults, False
     
@@ -133,7 +146,8 @@ class Helper():
             for i in range(len(titulos)):
                 cargas[i] = int(re.sub(r'\D', '', cargas[i].get_attribute('innerText')))
                 courses.append({'disciplina' : titulos[i].text, 'limite_faltas' : int((cargas[i] * 25) / 100), 'faltas' : faltas[i].text})
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, []
         return driver, courses
 
@@ -144,7 +158,8 @@ class Helper():
             courses = []
             for i in range(len(titulos)):
                 courses.append({'disciplina' : titulos[i].text, 'media' : medias[i].text})
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, []
         return driver, courses
 
@@ -152,10 +167,11 @@ class Helper():
         try:
             driver.get('http://www.prograd.uesc.br/PortalSagres/Modules/Diario/Aluno/Relatorio/HistoricoEscolar.aspx')
             historico_url = driver.find_element_by_xpath('//iframe[@embedded="pdf"]').get_attribute('src')
-            r = requests.post('http://semipronet.me/api/check_craa', json = {'url' : historico_url})
+            r = requests.post('http://checkcraa.semipronet.me/api/check_craa', json = {'url' : historico_url})
             resp = r.json()
             craa = resp['craa']
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, ''
         return driver, craa
 
@@ -178,7 +194,7 @@ class Helper():
             else:
                 return driver, ''
         except Exception as exc:
-            print(exc)
+            print (exc)
             return driver, ''
         return driver, horarioURL
 
@@ -186,7 +202,8 @@ class Helper():
         try:
             driver.get('http://www.prograd.uesc.br/PortalSagres/Modules/Diario/Professor/Default.aspx')
             driver.find_element_by_class_name('controle-menu-txt') #Troca de pagina e tenta achar botão 'menu' do canto esquerdo que so aparece em portal do aluno
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, False
         return driver, True
 
@@ -196,7 +213,8 @@ class Helper():
             classes = []
             for classe in classes_nodes:
                 classes.append({'class' : classe.text()})
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, []
         return driver, classes
 
@@ -206,6 +224,7 @@ class Helper():
             class_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(., "(T")]' % (code))
             students_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(text(), "(T")]/../../div[@class="webpart-classe-detalhes"]/span[contains(., "Alunos")]' % (code))
             classe = {'class' : class_node.text(), 'students' : students_node.get_attribute('innerText')}
-        except:
+        except Exception as exc:
+            print (exc)
             return driver, {}
         return driver, classe
