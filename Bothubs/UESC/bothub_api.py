@@ -1,13 +1,19 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 from flask_restful import Resource, Api
 from config.api_keys import KEYS
 from config.essential import BOTS, SERVICES
+from thread_with_return import ThreadWithReturnValue
 import requests
+import time
 import json
 import os
 
 app = Flask(__name__)
 api = Api(app)
+
+def DoTheRequest(bot_url, service, params):
+    response = requests.post('%s/%s' % (bot_url, service), json = {'params' : params}, timeout=120)
+    return response.json()
 
 class StartService(Resource):
     def get(self):
@@ -23,11 +29,14 @@ class StartService(Resource):
                         params = request.json['params']
                     else:
                         params = {}
-
-                    response = requests.post('%s/%s' % (bot_url, service), json = {'params' : params})
-                    print (response.json())
-                    return response.json()
-                    # return { "response" : "BOTHUB EM DESENVOLVIMENTO", "type" : "text"}
+                    def generate():
+                        response = ThreadWithReturnValue(target=DoTheRequest, args=tuple([bot_url, service, params]))
+                        response.start()
+                        while response.is_alive():
+                            time.sleep(2)
+                            yield '' # ?? works ??
+                        yield json.dumps(response.join())
+                    return Response(generate(), content_type='application/json')
                 except KeyError as exc:
                     print (exc)
                     return 'servico nao encontrado no bothub', 404
