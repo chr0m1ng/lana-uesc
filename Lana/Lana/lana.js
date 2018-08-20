@@ -1,11 +1,19 @@
 class Lana {}
 const request = require('request');
+const fernet = require('fernet');
 const watson_api = require('./watson');
 const b4a = require('./b4a');
 const bothubs = require('./config/bothubs');
-const bothubs_keys = require('./config/keys').bothub_keys;
+const keys = require('./config/keys');
+const bothubs_keys = keys.bothub_keys;
+const b4a_crypt_key = keys.b4a_crypt_key;
 
 const lana = new Lana();
+const b4a_crypt_secret = new fernet.Secret(b4a_crypt_key);
+const b4a_crypt_token = new fernet.Token({
+    'secret' : b4a_crypt_secret,
+    'ttl' : 0
+});
 
 const sendFinalMessageToEndPoint = (message, endpoint, user, type='text', markdown=false) => {
     const options = {
@@ -139,7 +147,8 @@ const handleNewUserInfo = (answer, message_body) => {
         b4a.getUser(interface, interfaceId)
             .then(lana_user => {
                 context.new_user_info.forEach(info => {
-                    b4a.setUserProp(lana_user.id, info, context[info])
+                    const crypt_info = b4a_crypt_token.encode(context[info]);
+                    b4a.setUserProp(lana_user.id, info, crypt_info)
                         .then(setted_prop => {
                             const disgress = () => {
                                 return new Promise((resolve, reject) => {
@@ -183,7 +192,7 @@ const handleLocateUserInfo = (answer, message_body) => {
         .then(lana_user => {
             answer.context.needs.forEach(info => { //Vou verificar tudo que preciso buscar do usuario, caso já tenha no b4a eu seto no context
                 if(lana_user.get(info) != null) 
-                    answer.context[info] = lana_user.get(info);
+                    answer.context[info] = b4a_crypt_token.decode(lana_user.get(info));
             });
             //Apos setar informações no context eu replico a mensagem ao watson com o novo context
             watson_api.sendMessageToWatson(message_body.message, answer.context) //Mensagem reenviada junto ao context modificado
