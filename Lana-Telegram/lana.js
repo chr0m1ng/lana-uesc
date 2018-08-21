@@ -5,7 +5,7 @@ const urlMessageEndpoint = keys.urlMessageEndpoint;
 const lana_api_key = keys.lana_api_key;
 const request = require('request');
 
-const Bot = require('node-telegram-bot-api');
+const Bot = require('tgfancy');
 let lana;
 
 if(process.env.NODE_ENV === 'production') {
