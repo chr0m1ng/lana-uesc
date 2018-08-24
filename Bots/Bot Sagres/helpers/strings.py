@@ -9,7 +9,7 @@ class ErrorStrings():
     
     def GetNoSuchClassErrorMessage(self, code):
         return {
-            'response' : 'Não foi possivel encontrar a turmma %s dentre as atuais' % (code),
+            'response' : 'Não foi possivel encontrar a turma %s dentre as atuais' % (code),
             'type' : 'text'
         }
 
