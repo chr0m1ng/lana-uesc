@@ -9,20 +9,40 @@ const watson_conversation = new watson.ConversationV1({
 
 let watsonAPI = new Watson();
 
-watsonAPI.sendMessageToWatson = (message, context) => {
+watsonAPI.sendMessageToWatson = (message, context, intent = null) => {
     return new Promise((resolve, reject) => { 
-        watson_conversation.message({
-            workspace_id: keys.watson_workspace_id,
-            input: {
-                'text' : message
-            },
-            'context': context
-        }, (err, res) => {
-            if(err)
-                reject('Desculpe, tente novamente mais tarde');
-            else
-                resolve(res);
-        });
+        if(intent == null) {
+            watson_conversation.message({
+                workspace_id: keys.watson_workspace_id,
+                input: {
+                    'text' : message
+                },
+                'context': context
+            }, (err, res) => {
+                if(err)
+                    reject('Desculpe, tente novamente mais tarde');
+                else
+                    resolve(res);
+            });
+        }
+        else {
+            watson_conversation.message({
+                workspace_id: keys.watson_workspace_id,
+                input: {
+                    'text' : message
+                },
+                'context': context,
+                intents : [{
+                    "intent" : intent,
+                    "confidence" : 1
+                }]
+            }, (err, res) => {
+                if(err)
+                    reject('Desculpe, tente novamente mais tarde');
+                else
+                    resolve(res);
+            });
+        }
     });
 }
 

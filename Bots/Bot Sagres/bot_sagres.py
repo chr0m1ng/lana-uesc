@@ -83,7 +83,7 @@ class Bot():
                         if courses != []:
                             response = ''
                             for course in courses:
-                                response += '• %s\nMédia: %s\nFaltas: %s\n\n' % (course['disciplina'], course['media'], course['faltas'])
+                                response += '• %s\n\n' % (course)
                             response = response[:-2]
                             return {
                                 'response' : response,

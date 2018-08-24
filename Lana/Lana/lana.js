@@ -1,6 +1,6 @@
 class Lana {}
 const request = require('request');
-const fernet = require('fernet');
+const crypto = require('./crypto_api');
 const watson_api = require('./watson');
 const b4a = require('./b4a');
 const bothubs = require('./config/bothubs');
@@ -9,11 +9,6 @@ const bothubs_keys = keys.bothub_keys;
 const b4a_crypt_key = keys.b4a_crypt_key;
 
 const lana = new Lana();
-const b4a_crypt_secret = new fernet.Secret(b4a_crypt_key);
-const b4a_crypt_token = new fernet.Token({
-    'secret' : b4a_crypt_secret,
-    'ttl' : 0
-});
 
 const sendFinalMessageToEndPoint = (message, endpoint, user, type='text', markdown=false) => {
     const options = {
@@ -147,7 +142,9 @@ const handleNewUserInfo = (answer, message_body) => {
         b4a.getUser(interface, interfaceId)
             .then(lana_user => {
                 context.new_user_info.forEach(info => {
-                    const crypt_info = b4a_crypt_token.encode(context[info]);
+                    // const crypt_info = b4a_crypt_token.encode(context[info]);
+                    // b4a.setUserProp(lana_user.id, info, context[info])
+                    const crypt_info = crypto.encrypt(context[info]);
                     b4a.setUserProp(lana_user.id, info, crypt_info)
                         .then(setted_prop => {
                             const disgress = () => {
@@ -191,14 +188,17 @@ const handleLocateUserInfo = (answer, message_body) => {
         b4a.getUser(interface, interfaceId) //Vou buscar o usuario no b4a
         .then(lana_user => {
             answer.context.needs.forEach(info => { //Vou verificar tudo que preciso buscar do usuario, caso já tenha no b4a eu seto no context
-                if(lana_user.get(info) != null) 
-                    answer.context[info] = b4a_crypt_token.decode(lana_user.get(info));
+                if(lana_user.get(info) != null) {
+                    answer.context[info] = crypto.decrypt(lana_user.get(info));
+                    // answer.context[info] = lana_user.get(info);
+                } 
             });
             //Apos setar informações no context eu replico a mensagem ao watson com o novo context
-            watson_api.sendMessageToWatson(message_body.message, answer.context) //Mensagem reenviada junto ao context modificado
+            watson_api.sendMessageToWatson(message_body.message, answer.context, answer.context.send_intent_with_message) //Mensagem reenviada junto ao context modificado
                 .then(watson_answer => {
                     if(watson_answer.context.search_info_first != null) //Mesmo com novo context ainda necessita de outras informações que não estão no b4a
                         watson_answer.context.search_info_first = false; //Caso não achou as infos no b4a então não precisa buscar de novo
+                    answer.context.send_intent_with_message = null; //Já enviou a intent com a mensagem, zerar para não sujar as proximas
                     handleWatsonAnswer(watson_answer, message_body) //Vou voltar a tentar resolver a mensagem, desta vez não entrará aqui novamente
                         .then(lana_message => resolve(lana_message))
                         .catch(lana_err => reject(lana_err));
@@ -266,6 +266,17 @@ const handleService = (answer, message_body) => {
         context.needs.forEach(info => { //Salvo os parametros necessarios em params para passar pro bothub executar o servico
             params[info] = context[info];
             context[info] = null; //Zero os parametros para não interferir em proximos serviços
+            if (params[info] == null) {
+                b4a.getUser(interface, interfaceId)
+                    .then(lana_user => {
+                        if(lana_user.get(info) != null)
+                            params[info] = crypto.decrypt(lana_user.get(info)); //Caso veio como null eu vou buscar no b4a
+                            // params[info] = lana_user.get(info); //Caso veio como null eu vou buscar no b4a
+                    })
+                    .catch(user_err => {
+                        reject(user_err);
+                    });
+            }
         });
         startServiceAndProvideFeedback(context.bothub, context.intent, params, endpoint, user, interface); //Mando iniciar o servico e sigo em frente sem esperar acabar
         context.bothub = null; //Zera pedido de serviço pra não refazer chamadas
@@ -283,6 +294,7 @@ const handleWatsonAnswer = (answer, message_body) => {
         const interface = message_body.interface;
         const user = message_body.user;
         const interfaceId = `${user.id}`;
+        // console.log(answer);
         //Aqui teremos alguns tratamentos especiais
         if(answer.context.intent == 'Usuario_Registrar') { //Novo usuario da lana
             handleNewLanaUser(answer, message_body)
@@ -344,7 +356,7 @@ const handleMessage = message_body => {
             .catch(context_err => { //Context não existe, usuario existente?
                 if(context_err.code == 404) {
                     b4a.getUser(interface, interfaceId)
-                        .then(user => { //Usuario existente porem sem context (como??), melhor salvar novo context e seguir normalmente
+                        .then(user => { //Usuario existente porem sem context, melhor salvar novo context e seguir normalmente
                             watson_api.sendMessageToWatson(message, {}) //Mensagem sem contexto anterior...
                                 .then(watson_answer => {
                                     handleWatsonAnswer(watson_answer, message_body)

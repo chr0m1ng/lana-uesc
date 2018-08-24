@@ -30,7 +30,7 @@ class Helper():
             input_login[1].send_keys(password)
             driver.find_element_by_id('ctl00_PageContent_LoginPanel_LoginButton').click() #Clica para entrar
             try: #Testa se conseguiu fazer o login verificando se existe o nome no canto superior esquerdo
-                driver.find_element_by_class_name('usuario-nome').text
+                driver.find_element_by_class_name('usuario-nome')
             except Exception as exc:
                 print (exc)
                 try: #Pode ser professor, deve apertar botão 'Acessar Portal Sagres'
@@ -88,11 +88,10 @@ class Helper():
     def ListCoursesOnTabPortalDoAluno(self, driver):
         try:
             titulos = driver.find_elements_by_xpath('//a[contains(@class, "webpart-aluno-nome")]')
-            medias = driver.find_elements_by_xpath('//div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]/strong/span')
-            faltas = driver.find_elements_by_xpath("//div[contains(@class, 'webpart-aluno-links')]/div/a[contains(., 'faltas')]/strong/span")
             courses = []
             for i in range(len(titulos)):
-                courses.append({'disciplina' : titulos[i].text, 'media' : medias[i].text, 'faltas' : faltas[i].text})
+                if titulos[i].text not in courses:
+                    courses.append(titulos[i].text)
         except Exception as exc:
             print (exc)
             return driver, []
@@ -201,7 +200,7 @@ class Helper():
     def GoToTabPortalDoProfessor(self, driver):
         try:
             driver.get('http://www.prograd.uesc.br/PortalSagres/Modules/Diario/Professor/Default.aspx')
-            driver.find_element_by_class_name('controle-menu-txt') #Troca de pagina e tenta achar botão 'menu' do canto esquerdo que so aparece em portal do aluno
+            driver.find_element_by_id('ControleMenuSlide') #Troca de pagina e tenta achar botão 'menu' do canto esquerdo que so aparece em portal do aluno
         except Exception as exc:
             print (exc)
             return driver, False
@@ -212,7 +211,7 @@ class Helper():
             classes_nodes = driver.find_elements_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span')
             classes = []
             for classe in classes_nodes:
-                classes.append({'class' : classe.text()})
+                classes.append({'class' : classe.text})
         except Exception as exc:
             print (exc)
             return driver, []
@@ -223,7 +222,7 @@ class Helper():
             code = code.upper()
             class_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(., "(T")]' % (code))
             students_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(text(), "(T")]/../../div[@class="webpart-classe-detalhes"]/span[contains(., "Alunos")]' % (code))
-            classe = {'class' : class_node.text(), 'students' : students_node.get_attribute('innerText')}
+            classe = {'class' : class_node.text, 'students' : students_node.get_attribute('innerText')}
         except Exception as exc:
             print (exc)
             return driver, {}

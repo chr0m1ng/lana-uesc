@@ -13,6 +13,7 @@ api = Api(app)
 
 def DoTheRequest(bot_url, service, params):
     response = requests.post('%s/%s' % (bot_url, service), json = {'params' : params}, timeout=120)
+    print(response.json())
     return response.json()
 
 class StartService(Resource):
@@ -34,7 +35,7 @@ class StartService(Resource):
                         response.start()
                         while response.is_alive():
                             time.sleep(2)
-                            yield '' # ?? works ??
+                            yield '' 
                         yield json.dumps(response.join())
                     return Response(generate(), content_type='application/json')
                 except KeyError as exc:

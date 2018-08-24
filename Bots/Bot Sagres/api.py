@@ -116,7 +116,7 @@ class Sagres_Listar_Turmas_Corrente(Resource):
     def post(self):
         if 'params' in request.json:
             params = request.json['params']
-            if 'sagres_username' in params and 'sagres_password' in params and 'codigo_disciplina' in params:
+            if 'sagres_username' in params and 'sagres_password' in params:
                 bot_sagres = Bot()
                 return bot_sagres.Sagres_Listar_Turmas_Corrente(params)
             else:
@@ -146,7 +146,7 @@ api.add_resource(Sagres_Listar_Faltas_Disciplina, '/sagres_listar_faltas_discipl
 api.add_resource(Sagres_Listar_Notas, '/sagres_listar_notas')
 api.add_resource(Sagres_Listar_Notas_Disciplina, '/sagres_listar_notas_disciplina')
 api.add_resource(Sagres_Listar_Turmas_Corrente, '/sagres_listar_turmas_corrente')
-api.add_resource(Sagres_Listar_Alunos_Turma, '/sagres_listar_alunos_turmas')
+api.add_resource(Sagres_Listar_Alunos_Turma, '/sagres_listar_alunos_turma')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))

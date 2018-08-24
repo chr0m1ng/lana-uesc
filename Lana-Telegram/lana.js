@@ -69,7 +69,7 @@ const fowardMessageToLana = (msg) => {
         interface : 'telegram',
         type : 'outgoing',
         message : msg.text,
-        errMessage : body,
+        errMessage : err,
         to : {
           chatId : msg.chat.id
         },
