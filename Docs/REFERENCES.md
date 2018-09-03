@@ -17,7 +17,7 @@ BOT [Introduction](https://core.telegram.org/bots)
 
 BOT [API](https://core.telegram.org/bots/api)
 
-[API](https://github.com/yagop/node-telegram-bot-api) to NodeJS
+[API](https://github.com/yagop/node-telegram-bot-api) for NodeJS
 
 [Webhook](http://mvalipour.github.io/node.js/2015/12/06/telegram-bot-webhook-existing-express) with NodeJS
 
