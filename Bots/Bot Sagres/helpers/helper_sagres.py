@@ -230,3 +230,19 @@ class Helper():
             print (exc)
             return driver, []
         return driver, classes
+
+    def CountAmountOfClassesOnTabPortalDoProfessor(self, driver):
+        try:
+            classes = driver.find_elements_by_class_name('webpart-classe')
+        except Exception as exc:
+            print (exc)
+            return driver, -1
+        return driver, len(classes)
+
+    def CountWeekWorkload(self, driver):
+        try:
+            class_node = driver.find_elements_by_xpath('//table[@class="meus-horarios"]/tbody/tr/td[contains(@style, "background-color")]')
+        except Exception as exc:
+            print (exc)
+            return driver, -1
+        return driver, len(class_node)

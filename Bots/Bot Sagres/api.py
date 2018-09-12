@@ -136,17 +136,29 @@ class Sagres_Listar_Alunos_Turma(Resource):
         else:
             return 'request fora do padrao', 400
 
-# class Sagres_Listar_Quantidade_Turmas(Resource):
-#     def post(self):
-#         if 'params' in request.json:
-#             params = request.json['params']
-#             if 'sagres_username' in params and 'sagres_password' in params:
-#                 bot_sagres = Bot()
-#                 return bot_sagres.Sagres_Listar_Turmas_Corrente(params)
-#             else:
-#                 return 'request fora do padrao', 400
-#         else:
-#             return 'request fora do padrao', 400
+class Sagres_Listar_Quantidade_Turmas(Resource):
+    def post(self):
+        if 'params' in request.json:
+            params = request.json['params']
+            if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
+                return bot_sagres.Sagres_Listar_Quantidade_Turmas(params)
+            else:
+                return 'request fora do padrao', 400
+        else:
+            return 'request fora do padrao', 400
+
+class Sagres_Listar_Carga_Horaria(Resource):
+    def post(self):
+        if 'params' in request.json:
+            params = request.json['params']
+            if 'sagres_username' in params and 'sagres_password' in params:
+                bot_sagres = Bot()
+                return bot_sagres.Sagres_Listar_Carga_Horaria(params)
+            else:
+                return 'request fora do padrao', 400
+        else:
+            return 'request fora do padrao', 400
 
 api.add_resource(Sagres, '/sagres')
 api.add_resource(Sagres_Calcular_CRAA, '/sagres_calcular_craa')
@@ -159,6 +171,8 @@ api.add_resource(Sagres_Listar_Notas, '/sagres_listar_notas')
 api.add_resource(Sagres_Listar_Notas_Disciplina, '/sagres_listar_notas_disciplina')
 api.add_resource(Sagres_Listar_Turmas_Corrente, '/sagres_listar_turmas_corrente')
 api.add_resource(Sagres_Listar_Alunos_Turma, '/sagres_listar_alunos_turma')
+api.add_resource(Sagres_Listar_Quantidade_Turmas, '/sagres_listar_quantidade_turmas')
+api.add_resource(Sagres_Listar_Carga_Horaria, '/sagres_listar_carga_horaria')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))

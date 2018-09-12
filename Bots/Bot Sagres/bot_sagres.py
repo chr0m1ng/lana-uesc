@@ -316,3 +316,51 @@ class Bot():
                 return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
             return self.error_strings.GetSagresDownMessage()
+
+    def Sagres_Listar_Quantidade_Turmas(self, params):
+        self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
+        if status == False:
+            self.driver, status = self.sagres_helper.Login(self.driver, params['sagres_username'], params['sagres_password'])
+            if status == True:
+                self.driver, status = self.sagres_helper.IsAluno(self.driver)
+                if status == False:
+                    self.driver, status = self.sagres_helper.GoToTabPortalDoProfessor(self.driver)
+                    if status == True:
+                        self.driver, classes = self.sagres_helper.CountAmountOfClassesOnTabPortalDoProfessor(self.driver)
+                        if classes != -1:
+                            return {
+                                'response' : 'Você já ministrou %d disciplinas' % (classes),
+                                'type' : 'text'
+                            }
+                        else:
+                            return self.error_strings.GetGenericErrorMessage()
+                    else:
+                        return self.error_strings.GetGenericErrorMessage()
+                else:
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'professor')
+            else:
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+        else:
+            return self.error_strings.GetSagresDownMessage()
+
+    def Sagres_Listar_Carga_Horaria(self, params):
+        self.driver, status = self.sagres_helper.IsSagresDown(self.driver)
+        if status == False:
+            self.driver, status = self.sagres_helper.Login(self.driver, params['sagres_username'], params['sagres_password'])
+            if status == True:
+                self.driver, status = self.sagres_helper.IsAluno(self.driver)
+                if status == False:
+                    self.driver, workload = self.sagres_helper.CountWeekWorkload(self.driver)
+                    if workload != -1:
+                        return {
+                            'response' : 'Você tem %d horas de carga semanal' % (workload),
+                            'type' : 'text'
+                        }
+                    else:
+                        return self.error_strings.GetGenericErrorMessage()
+                else:
+                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'professor')
+            else:
+                return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
+        else:
+            return self.error_strings.GetSagresDownMessage()
