@@ -296,10 +296,14 @@ class Bot():
                 if status == False:
                     self.driver, status = self.sagres_helper.GoToTabPortalDoProfessor(self.driver)
                     if status == True:
-                        self.driver, classe = self.sagres_helper.ListStudentsClassOnTabPortalDoProfessor(self.driver, params['codigo_disciplina'])
-                        if classe != {}:
+                        self.driver, classes = self.sagres_helper.ListStudentsClassOnTabPortalDoProfessor(self.driver, params['codigo_disciplina'])
+                        if classes != []:
+                            response = ''
+                            for classe in classes:
+                                response += '%s\n• %s\n\n' % (classe['class'], classe['students'])
+                            response = response[:-2]
                             return {
-                                'response' : '%s\n• %s' % (classe['class'], classe['students']),
+                                'response' : response,
                                 'type' : 'text'
                             }
                         else:

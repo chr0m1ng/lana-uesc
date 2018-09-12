@@ -220,10 +220,13 @@ class Helper():
     def ListStudentsClassOnTabPortalDoProfessor(self, driver, code):
         try:
             code = code.upper()
-            class_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(., "(T")]' % (code))
-            students_node = driver.find_element_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(text(), "(T")]/../../div[@class="webpart-classe-detalhes"]/span[contains(., "Alunos")]' % (code))
-            classe = {'class' : class_node.text, 'students' : students_node.get_attribute('innerText')}
+            class_node = driver.find_elements_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(., "(T")]' % (code))
+            students_node = driver.find_elements_by_xpath('//span[contains(@class, "classe_aberta")]/following-sibling::span[contains(., "%s") and contains(text(), "(T")]/../../div[@class="webpart-classe-detalhes"]/span[contains(., "Alunos")]' % (code))
+            classes = []
+            for i in range(len(class_node)):
+                classes.append({'class' : class_node[i].text, 'students' : students_node[i].get_attribute('innerText')})
+            # classe = {'class' : class_node.text, 'students' : students_node.get_attribute('innerText')}
         except Exception as exc:
             print (exc)
-            return driver, {}
-        return driver, classe
+            return driver, []
+        return driver, classes
