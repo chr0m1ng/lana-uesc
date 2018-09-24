@@ -14,7 +14,7 @@ Remove Info | ✅ (Lana Only, not User Accessible)
 Start Services | ✅
 Small Talks | ✅ (Need Improvements)
 Bothub UESC | ✅ (bothub is ready, bots not yet)
-Bot Sagres | ✅ (Still need tests on teacher features)
+Bot Sagres | ✅
 Bot UESC | 🚧
 Bot Transparencia | 🚧
 
