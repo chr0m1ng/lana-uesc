@@ -1,5 +1,5 @@
 # Lana
-Lana is almost there! Still developing workers(bots) to do the hard work. She's fine but bothub's bots are under construction 🚧 , that means it's only working for tests, Lana will not give you anything interesting yet.
+Lana is almost there! Still developing workers(bots) to do the hard work. She's fine but bothub's bots are under construction 🚧 , that means it's only working for tests, Lana will only give you information that can be found in Portal Sagres.
 
 Feature | Status
 ------------ | -------------
