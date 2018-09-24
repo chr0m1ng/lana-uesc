@@ -30,6 +30,6 @@ const watson = require('./watson');
 //     .then(res => console.log(res))
 //     .catch(err => console.error(res));
 
-// watson.sendMessageToWatson('quero saber minhas notas')
+// watson.sendMessageToWatson('noticias de hoje')
 //     .then(res => console.log(res))
 //     .catch(err => console.error(err));

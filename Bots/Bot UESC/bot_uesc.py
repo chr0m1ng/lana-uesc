@@ -6,10 +6,10 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 # from importlib import reload
 import sys
 import os
+import json
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
 
 DESIREDCAPS = DesiredCapabilities.CHROME
 DESIREDCAPS ['loggingPrefs'] = { 'browser':'ALL' }
@@ -31,16 +31,78 @@ class Bot():
         return self.general_strings.GetAboutUESCMessage()
 
     def UESC_Listar_Cursos(self):
-        return 'WiP'
+        self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
+        if status == False:
+            self.driver, status = self.uesc_helper.GoToGraduationCoursesPage(self.driver)
+            if status == True:
+                self.driver, courses = self.uesc_helper.ListCoursesInGraduationCoursesPage(self.driver)
+                if courses != {}:
+                    response = 'Estes são os cursos de graduação da UESC:\n*Bacharelado*\n'
+                    for bach in courses['bacharelado']:
+                        response += '• [%s](%s)\n' % (bach['curso'], bach['site'])
+                    response += '\n*Licenciatura*\n'
+                    for lic in courses['licenciatura']:
+                        response += '• [%s](%s)\n' % (lic['curso'], lic['site'])
+                    response = response[:-1]
+                    return {
+                        'response' : response,
+                        'type' : 'text',
+                        'markdown' : True
+                    }
+                else:
+                    return self.error_strings.GetGenericErrorMessage()
+            else:
+                return self.error_strings.GetGenericErrorMessage()
+        else:
+            return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Departamentos(self):
-        return 'WiP'
+        self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
+        if status == False:
+            self.driver, status = self.uesc_helper.GoToDepartmentsPage(self.driver)
+            if status == True:
+                self.driver, departments = self.uesc_helper.ListDepartmentsOnDepartmentsPage(self.driver)
+                if departments != []:
+                    response = 'Estes são os departamentos da UESC:\n'
+                    for department in departments:
+                        response += '• [%s](%s) - %s\n\n' % (department['sigla'], department['site'], department['departamento'])
+                    response = response[:-2]
+                    return {
+                        'response' : response,
+                        'type' : 'text',
+                        'markdown' : True
+                    }
+                else:
+                    return self.error_strings.GetGenericErrorMessage()
+            else:
+                return self.error_strings.GetGenericErrorMessage()
+        else:
+            return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editais(self, params):
         return 'WiP'
 
     def UESC_Listar_Editais_Recentes(self):
-        return 'WiP'
+        self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
+        if status == False:
+            self.driver, edicts = self.uesc_helper.ListLastEdictsOnMainPage(self.driver)
+            if edicts != []:
+                response = 'Estes são os ultimos editais publicados no site da UESC:\n'
+                for edict in edicts:
+                    response += '*%s*\n' % (edict['titulo'])
+                    for link in edict['links']:
+                        response += '• [%s](%s)\n' % (link['titulo'], link['link']) 
+                    response += '\n'
+                response = response[:-2]
+                return {
+                    'response' : response,
+                    'type' : 'text',
+                    'markdown' : True
+                }
+            else:
+                return self.error_strings.GetGenericErrorMessage()
+        else:
+            return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editaisbens(self, params):
         return 'WiP'
@@ -59,3 +121,12 @@ class Bot():
 
     def UESC_Listar_Resultados_Recentes(self):
         return 'WiP'
+
+
+# if __name__ == '__main__':
+#     bot_uesc = Bot()
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.IsUESCDown(bot_uesc.driver)
+#     print (res)
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.ListLastEdictsOnMainPage(bot_uesc.driver)
+#     print (res)
+#     bot_uesc.__del__()

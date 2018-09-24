@@ -25,7 +25,7 @@ class ErrorStrings():
             'type' : 'text'
         }
 
-    def GetSagresDownMessage(self):
+    def GetUESCDownMessage(self):
         return {
             'response' : 'O site da UESC está fora do ar',
             'type' : 'text'

@@ -250,7 +250,9 @@ const startServiceAndProvideFeedback = (bothub, service, params, endpoint, user,
                         sendFinalMessageToEndPoint('Ops, não estou conseguindo lidar com isso agora... Tente novamente mais tarde', endpoint, user);
                     });
             }
-            sendFinalMessageToEndPoint(body.response, endpoint, user, body.type); //Retorna resposta do serviço ao usuario
+            if (!body.markdown)
+                body.markdown = false;
+            sendFinalMessageToEndPoint(body.response, endpoint, user, body.type, body.markdown); //Retorna resposta do serviço ao usuario
         }
     });
 };
