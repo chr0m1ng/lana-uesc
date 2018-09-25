@@ -87,7 +87,7 @@ class Bot():
         if status == False:
             self.driver, edicts = self.uesc_helper.ListLastEdictsOnMainPage(self.driver)
             if edicts != []:
-                response = 'Estes são os ultimos editais publicados no site da UESC:\n\n'
+                response = 'Estes foram os ultimos editais publicados no site da UESC:\n\n'
                 for edict in edicts:
                     if len(edict['links']) > 0:
                         response += '*%s*\n' % (edict['titulo'])
@@ -109,7 +109,27 @@ class Bot():
         return 'WiP'
 
     def UESC_Listar_Editaisbens_Recentes(self):
-        return 'WiP'
+        self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
+        if status == False:
+            self.driver, status = self.uesc_helper.GoToEditaisBensPage(self.driver)
+            if status == True:
+                self.driver, edicts = self.uesc_helper.ListLastEditaisBensOnEditaisBensPage(self.driver)
+                if edicts != []:
+                    response = 'Estes foram os ultimos editais de bens e serviços publicados no site da UESC:\n\n*NÚMERO* - *DESCRIÇÃO* - *ABERTURA DO CERTAME*\n'
+                    for edict in edicts:
+                        response += '• [%s](%s) - %s - %s\n\n' % (edict['numero'], edict['link'], edict['descricao'], edict['abertura'])
+                    response = response[:-2]
+                    return {
+                        'response' : response,
+                        'type' : 'text',
+                        'markdown' : True
+                    }
+                else:
+                    return self.error_strings.GetGenericErrorMessage()
+            else:
+                return self.error_strings.GetGenericErrorMessage()
+        else:
+            return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Noticias(self, params):
         return 'WiP'
@@ -119,7 +139,7 @@ class Bot():
         if status == False:
             self.driver, news = self.uesc_helper.ListLastNewsOnMainPage(self.driver)
             if news != []:
-                response = 'Estas são as ultimas noticias publicadas no site da UESC:\n'
+                response = 'Estas foram as ultimas noticias publicadas no site da UESC:\n'
                 for n in news:
                     if len(n['links']) > 0:
                         response += '*%s*\n' % (n['titulo'])
@@ -164,10 +184,12 @@ class Bot():
             return self.error_strings.GetUESCDownMessage()
 
 
-if __name__ == '__main__':
-    bot_uesc = Bot()
-    bot_uesc.driver, res = bot_uesc.uesc_helper.IsUESCDown(bot_uesc.driver)
-    print (res)
-    bot_uesc.driver, res = bot_uesc.uesc_helper.ListLastResultsOnMainPage(bot_uesc.driver)
-    print (res)
-    bot_uesc.__del__()
+# if __name__ == '__main__':
+#     bot_uesc = Bot()
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.IsUESCDown(bot_uesc.driver)
+#     print (res)
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.GoToEditaisBensPage(bot_uesc.driver)
+#     print (res)
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.ListLastEditaisBensOnEditaisBensPage(bot_uesc.driver)
+#     print (res)
+#     bot_uesc.__del__()

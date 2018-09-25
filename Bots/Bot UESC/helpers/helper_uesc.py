@@ -1,5 +1,6 @@
 # coding=utf8
 from selenium import webdriver
+from datetime import datetime
 import requests
 import time
 import json
@@ -150,3 +151,31 @@ class Helper():
             print (exc)
             return driver, []
         return driver, results
+
+    def GoToEditaisBensPage(self, driver):
+        try:
+            driver.get('http://www.uesc.br/proad/index.php?item=conteudo_publicacao.php')
+            if driver.find_element_by_xpath('//div[@id="conteudo-interno"]/h2').text == 'PRÓ-REITORIA DE ADMINISTRAÇÃO E FINANÇAS - PROAD':
+                return driver, True
+            else:
+                return driver, False
+        except Exception as exc:
+            print (exc)
+            return driver, False
+
+    def ListLastEditaisBensOnEditaisBensPage(self, driver):
+        try:
+            current_year = datetime.now().year
+            nda_edicts = driver.find_elements_by_xpath('//div[@id="conteudo-interno"]/h3/following-sibling::div/div[contains(., "%s")]/following-sibling::div[@class="CollapsiblePanelContent"]/table[1]/tbody/tr/td[@bgcolor="#EAEAEA"]' % (current_year))
+            edicts = []
+            for i in range(0, len(nda_edicts), 3):
+                edicts.append({
+                    'numero' : nda_edicts[i].get_attribute('innerText'),
+                    'link' : nda_edicts[i].find_element_by_xpath('./a').get_attribute('href'),
+                    'descricao' : ' '.join(nda_edicts[i + 1].get_attribute('innerText').split()),
+                    'abertura' : nda_edicts[i + 2].get_attribute('innerText')
+                })
+        except Exception as exc:
+            print (exc)
+            return driver, []
+        return driver, edicts
