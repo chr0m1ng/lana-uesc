@@ -73,19 +73,16 @@ class Helper():
 
     def ListLastEdictsOnMainPage(self, driver):
         try:
-            edicts_names = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Editais")]/following-sibling::div[@id="barra-titulo-interno"]/p/strong')
+            edicts_names = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Editais")]/following-sibling::div[@id="barra-titulo-interno"]/p/strong') 
+            edicts_names = filter(lambda x: x.text.strip(), edicts_names)    
             edicts = []
-            last_links = 0
             for i in range(len(edicts_names)):
                 if i == 0:
                     edict_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Editais")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[following-sibling::strong[contains(., "%s")]]' % (edicts_names[1].text))
-                    last_links = len(edict_infos_links)
                 elif i == len(edicts_names) - 1:
                     edict_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Editais")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[preceding-sibling::strong[contains(., "%s")]]' % (edicts_names[i].text))
                 else:
-                    edict_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Editais")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[preceding-sibling::strong[contains(., "%s")] and following-sibling::strong[contains(., "%s")]]' % (edicts_names[i - 1].text, edicts_names[i + 1].text))
-                    edict_infos_links = edict_infos_links[last_links:]
-                    last_links = len(edict_infos_links)
+                    edict_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Editais")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[preceding-sibling::strong[contains(., "%s")] and following-sibling::strong[contains(., "%s")]]' % (edicts_names[i].text, edicts_names[i + 1].text))
                 edicts.append({
                     'titulo' : edicts_names[i].text,
                     'links' : []
@@ -100,4 +97,56 @@ class Helper():
             return driver, []
         return driver, edicts
 
-    
+    def ListLastNewsOnMainPage(self, driver):
+        try:
+            news_names = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Notícias")]/following-sibling::div[@id="barra-titulo-interno"]/p/strong')
+            news_names = filter(lambda x: x.text.strip(), news_names)    
+            news = []
+            for i in range(len(news_names)):
+                if i == 0:
+                    news_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Notícias")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[following-sibling::strong[contains(., "%s")]]' % (news_names[1].text))
+                elif i == len(news_names) - 1:
+                    news_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Notícias")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[preceding-sibling::strong[contains(., "%s")]]' % (news_names[i].text))
+                else:
+                    news_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Notícias")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[preceding-sibling::strong[contains(., "%s")] and following-sibling::strong[contains(., "%s")]]' % (news_names[i].text, news_names[i + 1].text))
+                news.append({
+                    'titulo' : news_names[i].text,
+                    'links' : []
+                })
+
+                for nil in news_infos_links:
+                    news[i]['links'].append({
+                        'titulo' : nil.text,
+                        'link' : nil.get_attribute('href')
+                    })
+        except Exception as exc:
+            print (exc)
+            return driver, []
+        return driver, news
+
+    def ListLastResultsOnMainPage(self, driver):
+        try:
+            results_names = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Resultados")]/following-sibling::div[@id="barra-titulo-interno"]/p/strong')
+            results_names = filter(lambda x: x.text.strip(), results_names)    
+            results = []
+            for i in range(len(results_names)):
+                if i == 0:
+                    results_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Resultados")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[following-sibling::strong[contains(., "%s")]]' % (results_names[1].text))
+                elif i == len(results_names) - 1:
+                    results_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Resultados")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[preceding-sibling::strong[contains(., "%s")]]' % (results_names[i].text))
+                else:
+                    results_infos_links = driver.find_elements_by_xpath('//div[contains(@class, "boxIndex")]/h2[contains(text(), "Resultados")]/following-sibling::div[@id="barra-titulo-interno"]/p/a[preceding-sibling::strong[contains(., "%s")] and following-sibling::strong[contains(., "%s")]]' % (results_names[i].text, results_names[i + 1].text))
+                results.append({
+                    'titulo' : results_names[i].text,
+                    'links' : []
+                })
+
+                for nil in results_infos_links:
+                    results[i]['links'].append({
+                        'titulo' : nil.text,
+                        'link' : nil.get_attribute('href')
+                    })
+        except Exception as exc:
+            print (exc)
+            return driver, []
+        return driver, results
