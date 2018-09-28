@@ -8,6 +8,14 @@ import re
 
 class Helper():
 
+    def MonthNumberToStringBR(self, month):
+        months = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+        try:
+            month_name = months[month]
+            return month_name
+        except:
+            return 'Mes Inexistente'
+            
     def IsUESCDown(self, driver):
         try:
             driver.get('http://www.uesc.br')
@@ -179,3 +187,37 @@ class Helper():
             print (exc)
             return driver, []
         return driver, edicts
+
+    def GoToNewsPage(self, driver):
+        try:
+            driver.get('http://www.uesc.br/noticias/')
+            if driver.find_element_by_xpath('//div[@id="conteudo-interno"]/h2').text == 'NOTÍCIAS':
+                return driver, True
+            else:
+                return driver, False
+        except Exception as exc:
+            print (exc)
+            return driver, False
+
+    def ListNewsOfDateOnNewsPage(self, driver, date):
+        try:
+            date_obj = datetime.strptime(date, "%d/%m/%Y")
+            month_name = self.MonthNumberToStringBR(date_obj.month)
+
+            driver.find_element_by_xpath('//select[@id="mes_noticia"]/option[contains(., "%s")]' % (month_name)).click()
+            driver.find_element_by_xpath('//select[@id="ano_noticia"]/option[contains(., "%s")]' % (date_obj.year)).click()
+            driver.find_element_by_xpath('//input[@name="enviar"]').click()
+            driver.get('http://www.uesc.br/noticias/index.php?&sortby=data_publicacao_noticia&sortdir=DESC&begin=0&rows=250')
+
+            news_infos_links = driver.find_elements_by_xpath('//table[@id="tabela_noticias"]/tbody/tr[contains(@class, "content")]/td[@class="coluna_data_noticia" and contains(., "%s")]/following-sibling::td' % (date_obj.strftime('%d/%m')))
+            news = []
+            for nil in news_infos_links:
+                news.append({
+                    'titulo' : nil.text,
+                    'link' : nil.find_element_by_xpath('./h4/a').get_attribute('href')
+                })
+        except Exception as exc:
+            print (exc)
+            return driver, [], False
+        return driver, news, True
+

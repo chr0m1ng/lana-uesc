@@ -15,7 +15,7 @@ class ErrorStrings():
     
     def GetNoNewsErrorMessage(self, date):
         return {
-            'response' : 'Não foi possivel encontrar noticias no dia %s' % (date),
+            'response' : 'Nenhuma noticia do dia %s foi encontrada no site da UESC' % (date),
             'type' : 'text'
         }
     

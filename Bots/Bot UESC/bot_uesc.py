@@ -80,7 +80,7 @@ class Bot():
             return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editais(self, params):
-        return 'WiP'
+        return {'response' : 'WiP', 'type' : 'text'}
 
     def UESC_Listar_Editais_Recentes(self):
         self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
@@ -106,7 +106,7 @@ class Bot():
             return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editaisbens(self, params):
-        return 'WiP'
+        return {'response' : 'WiP', 'type' : 'text'}
 
     def UESC_Listar_Editaisbens_Recentes(self):
         self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
@@ -132,7 +132,33 @@ class Bot():
             return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Noticias(self, params):
-        return 'WiP'
+        self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
+        if status == False:
+            self.driver, status = self.uesc_helper.GoToNewsPage(self.driver)
+            if status == True:
+                self.driver, news, status = self.uesc_helper.ListNewsOfDateOnNewsPage(self.driver, params['date'])
+                if status == True and news != []:
+                    if len(news) == 1:
+                        response = 'Esta foi a noticia publicada no site da UESC no dia %s:\n' % (params['date'])
+                    else:    
+                        response = 'Estas foram as noticias publicadas no site da UESC no dia %s:\n' % (params['date'])
+                    for n in news:
+                        response += '• [%s](%s)\n\n' % (n['titulo'], n['link'])
+                    response = response[:-2]
+                    return {
+                        'response' : response,
+                        'type' : 'text',
+                        'markdown' : True
+                    }
+                elif status == True and news == []:
+                    response = 'Nenhuma noticia do dia %s foi encontrada no site da UESC' % (params['date'])
+                    return self.error_strings.GetNoNewsErrorMessage(params['date'])
+                else:
+                    return self.error_strings.GetGenericErrorMessage()
+            else:
+                return self.error_strings.GetGenericErrorMessage()
+        else:
+            return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Noticias_Recentes(self):
         self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
@@ -158,7 +184,7 @@ class Bot():
             return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Resultados(self, params):
-        return 'WiP'
+        return {'response' : 'WiP', 'type' : 'text'}
 
     def UESC_Listar_Resultados_Recentes(self):
         self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
@@ -188,8 +214,8 @@ class Bot():
 #     bot_uesc = Bot()
 #     bot_uesc.driver, res = bot_uesc.uesc_helper.IsUESCDown(bot_uesc.driver)
 #     print (res)
-#     bot_uesc.driver, res = bot_uesc.uesc_helper.GoToEditaisBensPage(bot_uesc.driver)
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.GoToNewsPage(bot_uesc.driver)
 #     print (res)
-#     bot_uesc.driver, res = bot_uesc.uesc_helper.ListLastEditaisBensOnEditaisBensPage(bot_uesc.driver)
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.ListNewsOfDateOnNewsPage(bot_uesc.driver, '23/09/2018')
 #     print (res)
 #     bot_uesc.__del__()
