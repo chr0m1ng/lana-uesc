@@ -183,9 +183,6 @@ class Bot():
         else:
             return self.error_strings.GetUESCDownMessage()
 
-    def UESC_Listar_Resultados(self, params):
-        return {'response' : 'WiP', 'type' : 'text'}
-
     def UESC_Listar_Resultados_Recentes(self):
         self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
         if status == False:

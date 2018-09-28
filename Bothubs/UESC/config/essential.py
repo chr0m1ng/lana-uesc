@@ -29,6 +29,5 @@ SERVICES = {
     'uesc_listar_editais_recentes' : 'bot_uesc',
     'uesc_listar_noticias' : 'bot_uesc',
     'uesc_listar_noticias_recentes' : 'bot_uesc',
-    'uesc_listar_resultados' : 'bot_uesc',
     'uesc_listar_resultados_recentes' : 'bot_uesc'
 }

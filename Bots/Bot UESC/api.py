@@ -76,18 +76,6 @@ class UESC_Listar_Noticias_Recentes(Resource):
         bot_sagres = Bot()
         return bot_sagres.UESC_Listar_Noticias_Recentes()
 
-class UESC_Listar_Resultados(Resource):
-    def post(self):
-        if 'params' in request.json:
-            params = request.json['params']
-            if 'date' in params:    
-                bot_sagres = Bot()
-                return bot_sagres.UESC_Listar_Resultados(params)
-            else:
-                return 'request fora do padrao', 400
-        else:
-            return 'request fora do padrao', 400
-
 class UESC_Listar_Resultados_Recentes(Resource):
     def post(self):
         bot_sagres = Bot()
@@ -102,7 +90,6 @@ api.add_resource(UESC_Listar_Editaisbens, '/uesc_listar_editaisbens')
 api.add_resource(UESC_Listar_Editaisbens_Recentes, '/uesc_listar_editaisbens_recentes')
 api.add_resource(UESC_Listar_Noticias, '/uesc_listar_noticias')
 api.add_resource(UESC_Listar_Noticias_Recentes, '/uesc_listar_noticias_recentes')
-api.add_resource(UESC_Listar_Resultados, '/uesc_listar_resultados')
 api.add_resource(UESC_Listar_Resultados_Recentes, '/uesc_listar_resultados_recentes')
 
 
