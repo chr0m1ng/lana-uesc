@@ -3,7 +3,7 @@
 class ErrorStrings():
     def GetNoEdictsErrorMessage(self, date):
         return {
-            'response' : 'Não foi possivel encontrar editais no dia %s' % (date),
+            'response' : 'Não foi possivel encontrar editais no dia %s no site da UESC' % (date),
             'type' : 'text'
         }
     

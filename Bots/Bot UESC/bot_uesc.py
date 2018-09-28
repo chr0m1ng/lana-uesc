@@ -80,7 +80,33 @@ class Bot():
             return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editais(self, params):
-        return {'response' : 'WiP', 'type' : 'text'}
+        self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
+        if status == False:
+            self.driver, status = self.uesc_helper.GoToEdictsPage(self.driver)
+            if status == True:
+                self.driver, edicts, status = self.uesc_helper.ListEdictsOfDateOnEdictsPage(self.driver, params['date'])
+                if status == True and edicts != []:
+                    if len(edicts) == 1:
+                        response = 'Este foi o edital publicado no site da UESC no dia %s:\n' % (params['date'])
+                    else:    
+                        response = 'Estes foram os editais publicados no site da UESC no dia %s:\n' % (params['date'])
+                    for e in edicts:
+                        response += '• [%s](%s)\n\n' % (e['titulo'], e['link'])
+                    response = response[:-2]
+                    return {
+                        'response' : response,
+                        'type' : 'text',
+                        'markdown' : True
+                    }
+                elif status == True and edicts == []:
+                    response = 'Nenhum edital do dia %s foi encontrado no site da UESC' % (params['date'])
+                    return self.error_strings.GetNoEdictsErrorMessage(params['date'])
+                else:
+                    return self.error_strings.GetGenericErrorMessage()
+            else:
+                return self.error_strings.GetGenericErrorMessage()
+        else:
+            return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editais_Recentes(self):
         self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
@@ -211,8 +237,10 @@ class Bot():
 #     bot_uesc = Bot()
 #     bot_uesc.driver, res = bot_uesc.uesc_helper.IsUESCDown(bot_uesc.driver)
 #     print (res)
-#     bot_uesc.driver, res = bot_uesc.uesc_helper.GoToNewsPage(bot_uesc.driver)
+#     bot_uesc.driver, res = bot_uesc.uesc_helper.GoToEdictsPage(bot_uesc.driver)
 #     print (res)
-#     bot_uesc.driver, res = bot_uesc.uesc_helper.ListNewsOfDateOnNewsPage(bot_uesc.driver, '23/09/2018')
+#     bot_uesc.driver, res, status = bot_uesc.uesc_helper.ListEdictsOfDateOnEdictsPage(bot_uesc.driver, '27/09/2018')
 #     print (res)
 #     bot_uesc.__del__()
+    # bot_uesc.UESC_Listar_Editais({'date' : '27/09/2018'})
+    

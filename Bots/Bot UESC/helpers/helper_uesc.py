@@ -201,7 +201,7 @@ class Helper():
 
     def ListNewsOfDateOnNewsPage(self, driver, date):
         try:
-            date_obj = datetime.strptime(date, "%d/%m/%Y")
+            date_obj = datetime.strptime(date, '%d/%m/%Y')
             month_name = self.MonthNumberToStringBR(date_obj.month)
 
             driver.find_element_by_xpath('//select[@id="mes_noticia"]/option[contains(., "%s")]' % (month_name)).click()
@@ -221,3 +221,37 @@ class Helper():
             return driver, [], False
         return driver, news, True
 
+    def GoToEdictsPage(self, driver):
+        try:
+            driver.get('http://www.uesc.br/publicacoes/editais/')
+            if driver.find_element_by_xpath('//div[@id="conteudo-interno"]/h2').text == 'EDITAIS':
+                return driver, True
+            else:
+                return driver, False
+        except Exception as exc:
+            print (exc)
+            return driver, False
+
+    def ListEdictsOfDateOnEdictsPage(self, driver, date):
+        try:
+            date_obj = datetime.strptime(date, '%d/%m/%Y')
+            month_name = self.MonthNumberToStringBR(date_obj.month)
+
+            driver.find_element_by_xpath('//select[@id="mes_editais"]/option[contains(., "%s")]' % (month_name)).click()
+            driver.find_element_by_xpath('//select[@id="ano_editais"]/option[contains(., "%s")]' % (date_obj.year)).click()
+            driver.find_element_by_xpath('//input[@name="enviar"]').click()
+            driver.get('http://www.uesc.br/publicacoes/editais/index.php?&sortby=numeracao_publicacao&sortdir=DESC&begin=0&rows=250')
+
+            edicts_infos_links = driver.find_elements_by_xpath('//table[@id="tabela_Edital"]/tbody/tr[contains(@class, "content")]/td[@class="coluna_data_pub" and contains(., "%s")]/..' % (date_obj.strftime('%d/%m/%Y')))
+            edicts = []
+            for eil in edicts_infos_links:
+                edicts.append({
+                    'titulo' : eil.find_element_by_xpath('./td[@class="coluna_descricao_pub"]').text,
+                    'link' : eil.find_element_by_xpath('./td/a').get_attribute('href')
+                })
+        except Exception as exc:
+            print (exc)
+            return driver, [], False
+        return driver, edicts, True
+
+        
