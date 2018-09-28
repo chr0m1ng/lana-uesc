@@ -2,8 +2,7 @@
 #### Endereços de bots disponveis neste bothub [bot] = endpoint
 BOTS = {
     'bot_sagres' : 'http://botsagres.semipronet.me',
-    'bot_uesc' : 'http://127.0.0.1:5050',
-    'bot_transparencia' : 'http://127.0.0.1:5050'
+    'bot_uesc' : 'http://botuesc.semipronet.me'
 }
 
 #### Relação de serviço por bot [servico] = bot
@@ -31,7 +30,5 @@ SERVICES = {
     'uesc_listar_noticias' : 'bot_uesc',
     'uesc_listar_noticias_recentes' : 'bot_uesc',
     'uesc_listar_resultados' : 'bot_uesc',
-    'uesc_listar_resultados_recentes' : 'bot_uesc',
-    'transparenciaba' : 'bot_transparencia',
-    'transparenciaba_listar_empenhos' : 'bot_transparencia'
+    'uesc_listar_resultados_recentes' : 'bot_uesc'
 }
