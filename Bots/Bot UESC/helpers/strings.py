@@ -7,12 +7,6 @@ class ErrorStrings():
             'type' : 'text'
         }
     
-    def GetNoResultsErrorMessage(self, date):
-        return {
-            'response' : 'Não foi possivel encontrar resultados no dia %s' % (date),
-            'type' : 'text'
-        }
-    
     def GetNoNewsErrorMessage(self, date):
         return {
             'response' : 'Nenhuma noticia do dia %s foi encontrada no site da UESC' % (date),
