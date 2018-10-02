@@ -34,6 +34,15 @@ class ErrorStrings():
 class GeneralStrings():
     def GetAboutUESCMessage(self):
         return {
-            'response' : 'WiP',
+            'response' : 'No Site da UESC eu posso realizar estes serviços:\n\n'
+            '• Listas as noticias mais recentes\n'
+            '• Listas as noticias de um dia especifico\n'
+            '• Listar os resultados mais recentes\n'
+            '• Listar os editais mais recentes\n'
+            '• Listar os editais de um dia especifico\n'
+            '• Listar editais de bens e serviços mais recentes, i.e. os editais de compra da UESC\n'
+            '• Listar editais de bens e serviços de um mês especifico\n'
+            '• Listar os cursos disponiveis na UESC junto ao site do colegiado de cada um\n'
+            '• Listar os departamentos da universidade e os sites de cada\n',
             'type' : 'text'
         }
