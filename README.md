@@ -1,5 +1,5 @@
 # Lana
-Lana is almost there! Still developing workers(bots) to do the hard work. She's fine but bothub's bots are under construction 🚧 , that means it's only working for tests, Lana will only give you information that can be found in Portal Sagres.
+Lana is almost there! She's fine and bothub's bot are working but still need some improvments on dialog ant other stuff, that means it's only working for tests, Lana will only give you information that can be found in Portal Sagres.
 
 Feature | Status
 ------------ | -------------
@@ -13,10 +13,9 @@ Save Info | ✅
 Remove Info | ✅ (Lana Only, not User Accessible)
 Start Services | ✅
 Small Talks | ✅ (Need Improvements)
-Bothub UESC | ✅ (bothub is ready, bots not yet)
+Bothub UESC | ✅ 
 Bot Sagres | ✅
-Bot UESC | 🚧
-Bot Transparencia | 🚧
+Bot UESC | ✅
 
 ### Telegram BOT for Lana
 You can start an conversation with the bot clicking [here](https://t.me/lana_pa_bot). 
