@@ -254,4 +254,25 @@ class Helper():
             return driver, [], False
         return driver, edicts, True
 
-        
+    def ListEditaisBensOfDateOnEditaisBensPage(self, driver, date):
+        try:
+            date_obj = datetime.strptime(date, '%d/%m/%Y')
+            month_name = self.MonthNumberToStringBR(date_obj.month).upper()
+            try:
+                driver.find_element_by_xpath('//div[contains(@class, "CollapsiblePanelTab") and contains(., "%s")]' % (date_obj.year)).click()
+                nda_edicts = driver.find_elements_by_xpath('//div[contains(@class, "CollapsiblePanelTab") and contains(., "%s")]/following-sibling::div[contains(@class, "CollapsiblePanelContent")]/p[contains(., "%s")]/following-sibling::table[1]/tbody/tr/td[@bgcolor="#EAEAEA"]' % (date_obj.year, month_name))
+            except:
+                return driver, [], True
+                
+            edicts = []
+            for i in range(0, len(nda_edicts), 3):
+                edicts.append({
+                    'numero' : nda_edicts[i].get_attribute('innerText'),
+                    'link' : nda_edicts[i].find_element_by_xpath('./a').get_attribute('href'),
+                    'descricao' : ' '.join(nda_edicts[i + 1].get_attribute('innerText').split()),
+                    'abertura' : nda_edicts[i + 2].get_attribute('innerText')
+                })
+        except Exception as exc:
+            print (exc)
+            return driver, [], False
+        return driver, edicts, True

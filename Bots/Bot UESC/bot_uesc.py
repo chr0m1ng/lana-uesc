@@ -3,6 +3,7 @@ from helpers.helper_uesc import Helper
 from helpers.strings import ErrorStrings, GeneralStrings
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities    
+from datetime import datetime
 # from importlib import reload
 import sys
 import os
@@ -132,7 +133,33 @@ class Bot():
             return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editaisbens(self, params):
-        return {'response' : 'WiP', 'type' : 'text'}
+        self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
+        if status == False:
+            self.driver, status = self.uesc_helper.GoToEditaisBensPage(self.driver)
+            if status == True:
+                self.driver, edicts, status = self.uesc_helper.ListEditaisBensOfDateOnEditaisBensPage(self.driver, params['date'])
+                if status == True and edicts != []:
+                    date_obj = datetime.strptime(params['date'], '%d/%m/%Y')
+                    month_name = self.uesc_helper.MonthNumberToStringBR(date_obj).lower()
+                    year = date_obj.year
+                    response = 'Estes foram os editais de bens e serviços publicados no site da UESC no mês de %s em %s:\n\n*NÚMERO* - *DESCRIÇÃO* - *ABERTURA DO CERTAME*\n' % (month_name, year)
+                    for edict in edicts:
+                        response += '• [%s](%s) - %s - %s\n\n' % (edict['numero'], edict['link'], edict['descricao'], edict['abertura'])
+                    response = response[:-2]
+                    return {
+                        'response' : response,
+                        'type' : 'text',
+                        'markdown' : True
+                    }
+                elif status == True and edicts == []:
+                    date_obj = datetime.strptime(params['date'], '%d/%m/%Y')
+                    return self.error_strings.GetNoEditaisBensErrorMessage(date_obj.strftime('%m/%Y'))
+                else:
+                    return self.error_strings.GetGenericErrorMessage()
+            else:
+                return self.error_strings.GetGenericErrorMessage()
+        else:
+            return self.error_strings.GetUESCDownMessage()
 
     def UESC_Listar_Editaisbens_Recentes(self):
         self.driver, status = self.uesc_helper.IsUESCDown(self.driver)
@@ -177,7 +204,6 @@ class Bot():
                         'markdown' : True
                     }
                 elif status == True and news == []:
-                    response = 'Nenhuma noticia do dia %s foi encontrada no site da UESC' % (params['date'])
                     return self.error_strings.GetNoNewsErrorMessage(params['date'])
                 else:
                     return self.error_strings.GetGenericErrorMessage()
@@ -231,16 +257,3 @@ class Bot():
                 return self.error_strings.GetGenericErrorMessage()
         else:
             return self.error_strings.GetUESCDownMessage()
-
-
-# if __name__ == '__main__':
-#     bot_uesc = Bot()
-#     bot_uesc.driver, res = bot_uesc.uesc_helper.IsUESCDown(bot_uesc.driver)
-#     print (res)
-#     bot_uesc.driver, res = bot_uesc.uesc_helper.GoToEdictsPage(bot_uesc.driver)
-#     print (res)
-#     bot_uesc.driver, res, status = bot_uesc.uesc_helper.ListEdictsOfDateOnEdictsPage(bot_uesc.driver, '27/09/2018')
-#     print (res)
-#     bot_uesc.__del__()
-    # bot_uesc.UESC_Listar_Editais({'date' : '27/09/2018'})
-    

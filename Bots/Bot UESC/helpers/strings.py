@@ -25,6 +25,12 @@ class ErrorStrings():
             'type' : 'text'
         }
 
+    def GetNoEditaisBensErrorMessage(self, month_year):
+        return {
+            'response' : 'Não foi possivel encontrar editais de bens e serviços em %s no site da UESC' % (month_year),
+            'type' : 'text'
+        }
+
 class GeneralStrings():
     def GetAboutUESCMessage(self):
         return {
