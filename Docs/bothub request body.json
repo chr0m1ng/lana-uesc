@@ -1,7 +1,0 @@
-{
-    "service" : "serviceName", 
-    "params" : {
-        "paramName" : "paramValue",
-        "otherName" : "otherValue"
-    }
-}

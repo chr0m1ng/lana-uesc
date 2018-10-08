@@ -20,6 +20,9 @@ Bot UESC | ✅
 ### Telegram BOT for Lana
 You can start an conversation with the bot clicking [here](https://t.me/lana_pa_bot). 
 
+### Adding new BOT
+Documentation [here] (/Docs/BOT-RES-REQ-IDL.md)
+
 ### Monograph
 Scope of the Monograph can be found [here](/Docs/MONOGRAPH-SCOPE.md).
 
