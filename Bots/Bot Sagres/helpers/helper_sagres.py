@@ -104,6 +104,7 @@ class Helper():
             mediaXpath = '//a[contains(@class, "webpart-aluno-nome") and contains(text(), "%s")]/../../div[contains(@class, "webpart-aluno-links")]/div/a[contains(text(), "Média:")]' % (code.upper())
             mediaId = driver.find_element_by_xpath(mediaXpath).get_attribute('id')
             driver.execute_script('document.getElementById("%s").click()' % (mediaId))
+            driver.find_element_by_xpath('//a[contains(@class, "boletim-botao expandido")]').click()
             titulos = driver.find_elements_by_xpath('//div[contains(@class, "boletim-expandido")]/div/div/table/tbody/tr/td[@class="ident"]/span')
             creditos = driver.find_elements_by_xpath('//div[contains(@class, "boletim-expandido")]/div/div/table/tbody/tr/td[@class="txt-center"]/span')
             notas = []
