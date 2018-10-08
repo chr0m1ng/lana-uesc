@@ -140,7 +140,7 @@ class Bot():
                 self.driver, edicts, status = self.uesc_helper.ListEditaisBensOfDateOnEditaisBensPage(self.driver, params['date'])
                 if status == True and edicts != []:
                     date_obj = datetime.strptime(params['date'], '%d/%m/%Y')
-                    month_name = self.uesc_helper.MonthNumberToStringBR(date_obj).lower()
+                    month_name = self.uesc_helper.MonthNumberToStringBR(date_obj.month).lower()
                     year = date_obj.year
                     response = 'Estes foram os editais de bens e serviços publicados no site da UESC no mês de %s em %s:\n\n*NÚMERO* - *DESCRIÇÃO* - *ABERTURA DO CERTAME*\n' % (month_name, year)
                     for edict in edicts:
