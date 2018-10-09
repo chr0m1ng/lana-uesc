@@ -12,7 +12,9 @@ app = Flask(__name__)
 api = Api(app)
 
 def DoTheRequest(bot_url, service, params):
-    response = requests.post('%s/%s' % (bot_url, service), json = {'params' : params}, timeout=120)
+    session = requests.Session()
+    session.verify = False
+    response = session.post('%s/%s' % (bot_url, service), json = {'params' : params}, timeout=120)
     print(response.json())
     return response.json()
 
