@@ -1,8 +1,8 @@
 # coding=utf8
 #### Endereços de bots disponveis neste bothub [bot] = endpoint
 BOTS = {
-    'bot_sagres' : 'http://botsagres.semipronet.me',
-    'bot_uesc' : 'http://botuesc.semipronet.me'
+    'bot_sagres' : 'https://botsagres.semipronet.me',
+    'bot_uesc' : 'https://botuesc.semipronet.me'
 }
 
 #### Relação de serviço por bot [servico] = bot
