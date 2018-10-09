@@ -167,7 +167,7 @@ class Helper():
         try:
             driver.get('http://www.prograd.uesc.br/PortalSagres/Modules/Diario/Aluno/Relatorio/HistoricoEscolar.aspx')
             historico_url = driver.find_element_by_xpath('//iframe[@embedded="pdf"]').get_attribute('src')
-            r = requests.post('http://checkcraa.semipronet.me/api/check_craa', json = {'url' : historico_url})
+            r = requests.post('https://checkcraa.semipronet.me/api/check_craa', json = {'url' : historico_url})
             resp = r.json()
             craa = resp['craa']
         except Exception as exc:
