@@ -1,0 +1,4 @@
+module.exports = {
+  PAGE_ACESS_TOKEN: process.env.TOKEN_LANA_MESSENGER_BOT,
+  VERIFY_TOKEN: process.env.TOKEN_LANA_MESSENGER_BOT_VERIFY
+};
