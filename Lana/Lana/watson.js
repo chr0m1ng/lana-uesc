@@ -11,6 +11,7 @@ let watsonAPI = new Watson();
 
 watsonAPI.sendMessageToWatson = (message, context, intent = null) => {
     return new Promise((resolve, reject) => { 
+        context['timezone'] = 'America/Sao_Paulo';
         if(intent == null) {
             watson_conversation.message({
                 workspace_id: keys.watson_workspace_id,
