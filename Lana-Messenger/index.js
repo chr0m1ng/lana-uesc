@@ -123,4 +123,4 @@ app.post('/webhook', (req, res) => {
 
 // The 'process.env.PORT' is necessary if you want to use some services as Heroku
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Lana-Messenger listening on port ${port}!`));
