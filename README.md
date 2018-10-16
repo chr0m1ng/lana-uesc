@@ -4,7 +4,7 @@ Lana is almost there! She's fine and bothub's bot are working but still need som
 Feature | Status
 ------------ | -------------
 Telegram bot | ✅
-Messenger bot | ❌ (Future)
+Messenger bot | ✅
 SignUp| ✅
 SignIn | ✅
 Forgot Pass | ❌ (Future)
@@ -18,7 +18,11 @@ Bot Sagres | ✅
 Bot UESC | ✅
 
 ### Telegram BOT for Lana
-You can start an conversation with the bot clicking [here](https://t.me/lana_pa_bot). 
+You can start a conversation with the bot clicking [here](https://t.me/lana_pa_bot). 
+
+### Messenger BOT for Lana
+It's working, messenger doesn't have all the markdown styles implemented yet, so anchor links are not beeing made.
+Anyway, you can start a conversation with the bot when facebook verify Lana's page.
 
 ### Adding new BOT
 Documentation [here](/Docs/BOT-RES-REQ-IDL.md).
