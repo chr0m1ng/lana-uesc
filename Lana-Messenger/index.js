@@ -1,126 +1,145 @@
-'use strict'
-
-const express = require('express');
+const BootBot = require('bootbot');
 const request = require('request');
+const keys = require('./config/keys');
 const bodyParser = require('body-parser');
-const keys = require('./constants');
 
-const app = express();
-app.use(bodyParser.json());
+const bot = new BootBot({
+    accessToken: keys.PAGE_ACESS_TOKEN,
+    verifyToken: keys.VERIFY_TOKEN,
+    appSecret: keys.APP_SECRET
+});
+bot.app.use(bodyParser.json());
 
-app.get('/', (req, res) => res.send('hello world!'));
-
-const sendText = (sender, text) => {
-
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token: keys.PAGE_ACESS_TOKEN},
-    method: 'POST',
-    json: {
-      recipient: {id: sender},
-      message: {
-        text: text
-      }
-    }
-  }, (error, response, body) => {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
-    }
-  });
-}
-
-const sendAttachment = (sender, attachmentUrl, attachmentType) => {
-  // type can be: image, video, audio or file
-
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token: keys.PAGE_ACESS_TOKEN},
-    method: 'POST',
-    json: {
-      recipient: {
-        id: sender
-      },
-      message: {
-        attachment: {
-          type: attachmentType,
-          payload: {
-            url: attachmentUrl,
-            is_reusable: true
-          }
+bot.on('message', (payload, chat) => {
+    const text = payload.message.text;
+    chat.getUserProfile()
+        .then(user => {
+            const msgJson = {
+                interface : 'messenger',
+                type : 'incoming',
+                message : text,
+                from : {
+                    name : user.first_name + ' ' + user.last_name,
+                    id : user.id,
+                    chatId : user.id
+                },
+                date : new Date()
+            };
+            console.log(JSON.stringify(msgJson));
+            chat.sendAction('mark_seen');
+            fowardMessageToLana(text, chat, user);
+        });
+});
+  
+const fowardMessageToLana = (text, chat, user) => {
+    const options = {
+        method : 'POST',
+        uri : 'https://lana-api.herokuapp.com/api/message',
+        headers : {
+            'x-api-key': keys.LANA_API_KEY
+        },
+        body : {
+            interface : 'messenger',
+            message : text,
+            user : {
+                name : `${user.first_name} ${user.last_name}`,
+                id : user.id,
+                chatId : user.id
+            },
+            messageEndpoint : keys.URL_MESSAGE_ENDPOINT,
+        },
+        json : true // Automatically stringifies the body to JSON
+    };
+  
+    request(options, (err, resp, body) => {
+        if (!resp || resp.statusCode != 200 || err) {
+            const msgJson = {
+                interface : 'messenger',
+                type : 'outgoing',
+                message : text,
+                errMessage : err,
+                to : {
+                    chatId : user.id
+                },
+                date : new Date()
+            };
+            console.log(JSON.stringify(msgJson));
+            chat.say('Ops, algo deu errado, tente novamente', { typing : true });
         }
-      }
-    }
-  }, (error, response, body) => {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
-    }
-  });
-}
-
-// Adds support for GET requests to our webhook
-app.get('/webhook', (req, res) => {
-  
-  // Your verify token. Should be a random string.
-  let VERIFY_TOKEN = keys.VERIFY_TOKEN;
-    
-  // Parse the query params
-  let mode = req.query['hub.mode'];
-  let token = req.query['hub.verify_token'];
-  let challenge = req.query['hub.challenge'];
-    
-  // Checks if a token and mode is in the query string of the request
-  if (mode && token) {
-  
-    // Checks the mode and token sent is correct
-    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-      
-      // Responds with the challenge token from the request
-      console.log('WEBHOOK_VERIFIED');
-      res.status(200).send(challenge);
-    
-    } else {
-      // Responds with '403 Forbidden' if verify tokens do not match
-      res.sendStatus(403);      
-    }
-  }
-});
-
-// Creates the endpoint for our webhook 
-app.post('/webhook', (req, res) => {
-  let body = req.body;
-
-  // Checks this is an event from a page subscription
-  if (body.object === 'page') {
-
-    // Iterates over each entry - there may be multiple if batched
-    body.entry.forEach(function(entry) {
-
-      // Gets the message. entry.messaging is an array, but 
-      // will only ever contain one message, so we get index 0
-      let webhookEvent = entry.messaging[0];
-
-      let senderID = webhookEvent.sender.id;
-      let messageText = webhookEvent.message.text;
-
-      // Here goes your call back, you can make some function that process
-      // the text before you send a response to the user. I just sent the 
-      // same text back to the user.
-      sendText(senderID, messageText);
+        else {
+            let msgJson = {
+                interface : 'messenger',
+                type : 'outgoing',
+                message : body.message,
+                to : {
+                chatId : body.chatId
+                },
+                date : new Date()
+            };
+            console.log(JSON.stringify(msgJson));
+            let markdown = {};
+            if(body.markdown) {
+                markdown = {parse_mode: 'Markdown'};
+            }
+            chat.say(body.message, { typing : true });
+        }
     });
+};
 
-    // Returns a '200 OK' response to all requests
-    res.status(200).send('EVENT_RECEIVED');
-  } else {
-    // Returns a '404 Not Found' if event is not from a page subscription
-    res.sendStatus(404);
-  }
+// LANA'S ENDPOINT
+bot.app.post('/' + keys.APP_SECRET + '/sendMessage', (req, res) => {
+    sendMessageEndpoint(req.body)
+        .then(resp => {
+            res.sendStatus(200);
+        })
+        .catch(err => {
+            res.sendStatus(400);
+        });
+    });
+    
+const sendMessageEndpoint = (messageBody) => {
+    return new Promise((resolve, reject) => {
+        if(messageBody.chatId && messageBody.message) {
+            let msgJson = {
+                interface : 'messenger',
+                type : 'outgoing',
+                message : messageBody.message,
+                to : {
+                    chatId : messageBody.chatId
+                },
+                date : new Date()
+            };
+            console.log(JSON.stringify(msgJson));
+            let markdown = {};
+            if(messageBody.markdown) {
+                markdown = {parse_mode: 'Markdown'};
+            }
+            if(messageBody.type == 'image') {
+                bot.say(messageBody.chatId, { attachment: 'image', url: messageBody.message })
+                    .then(res => {
+                        resolve();
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            }
+            else {
+                bot.say(messageBody.chatId, messageBody.message)
+                    .then(res => {
+                        resolve();
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            }
+        }
+        else {
+            console.log("Unable to Send Message Body in Wrong Format");
+            reject();
+        }
+    });
+};
 
-});
-
-// The 'process.env.PORT' is necessary if you want to use some services as Heroku
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Lana-Messenger listening on port ${port}!`));
+bot.app.get('/', (req, res) => res.send('Hello World!'));
+bot.start(port);

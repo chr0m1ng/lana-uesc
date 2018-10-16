@@ -10,6 +10,7 @@
   "author": "Gabriel Santos",
   "license": "ISC",
   "dependencies": {
+    "bootbot": "https://github.com/chr0m1ng/bootbot/tarball/master",
     "express": "^4.16.3",
     "request": "^2.88.0"
   }
