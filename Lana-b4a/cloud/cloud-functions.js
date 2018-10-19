@@ -161,18 +161,46 @@ module.exports.setContext = (Parse) => {
 
 module.exports.getContextByInterfaceId = (Parse) => {
   return (request, response) => {
-  let Context = Parse.Object.extend('Context');
-  let contextQuery = new Parse.Query(Context);
-  contextQuery.equalTo(request.params.interface, request.params.interfaceId);
-  contextQuery.first()
-    .then(contextToFind => {
-      if(contextToFind != undefined)
-        response.success({code: 200, message: contextToFind.toJSON()});
-      else
-        response.error(404, "Context não encontrado");
-    })
-    .catch(err => {
-      response.error(err);
-    });
+    let Context = Parse.Object.extend('Context');
+    let contextQuery = new Parse.Query(Context);
+    contextQuery.equalTo(request.params.interface, request.params.interfaceId);
+    contextQuery.first()
+      .then(contextToFind => {
+        if(contextToFind != undefined)
+          response.success({code: 200, message: contextToFind.toJSON()});
+        else
+          response.error(404, "Context não encontrado");
+      })
+      .catch(err => {
+        response.error(err);
+      });
+  };
+};
+
+module.exports.removeStoredPasswords = (Parse) => {
+  return (request, status) => {
+    const date = new Date();
+    const timeNow = date.getTime();
+    const intervalOfTime = 24*60*60*1000;  // the time set is 24 hours in milliseconds
+    const timeThen = timeNow - intervalOfTime;
+    
+    // Limit date
+    const queryDate = new Date();
+    queryDate.setTime(timeThen);
+    
+    // Will query all users then check for '_password' on fields and unset all
+    const query = new Parse.Query(Parse.User);
+    query.find()
+      .then(result => {
+            result.forEach(user => {
+                Object.keys(user.attributes).forEach(attr => {
+                    if (attr.includes('_password'))
+                        user.unset(attr);
+                });
+                user.save(null, {useMasterKey:true});
+            });
+            status.success({ code: 200, message: 'Senhas apagadas com sucesso' });
+        })
+      .catch(err => status.error({ code : 500, message: 'Erro ao buscar usuarios' }));
   };
 };

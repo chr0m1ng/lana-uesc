@@ -3,7 +3,7 @@ const Parse = require('parse/node');
 const keys = require('./config/keys');
 Parse.initialize(keys.b4a_application_id, keys.b4a_js_key, keys.b4a_master_key);
 Parse.serverURL = keys.b4a_server_url;
-let b4a = new Back4app();
+const b4a = new Back4app();
 
 b4a.getUserContext = (interface, interfaceId) => {
     return new Promise ((resolve, reject) => Parse.Cloud.run('getContextByInterfaceId', {
