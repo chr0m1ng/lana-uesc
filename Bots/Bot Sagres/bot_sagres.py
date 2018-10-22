@@ -350,12 +350,16 @@ class Bot():
             if status == True:
                 self.driver, status = self.sagres_helper.IsAluno(self.driver)
                 if status == False:
-                    self.driver, workload = self.sagres_helper.CountWeekWorkload(self.driver)
-                    if workload != -1:
-                        return {
-                            'response' : 'Você tem %d horas de carga semanal' % (workload),
-                            'type' : 'text'
-                        }
+                    self.driver, status = self.sagres_helper.GoToTabPortalDoProfessor(self.driver)
+                    if status == True:
+                        self.driver, workload = self.sagres_helper.CountWeekWorkloadOnTabPortalDoProfessor(self.driver)
+                        if workload != -1:
+                            return {
+                                'response' : 'Você tem %d horas de carga semanal' % (workload),
+                                'type' : 'text'
+                            }
+                        else:
+                            return self.error_strings.GetGenericErrorMessage()
                     else:
                         return self.error_strings.GetGenericErrorMessage()
                 else:

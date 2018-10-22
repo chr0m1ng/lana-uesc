@@ -18,7 +18,7 @@ class Helper():
                 return driver, True
         except Exception as exc:
             print (exc)
-            return driver, True
+            return driver, False
         return driver, False
 
     def Login(self, driver, user, password):
@@ -242,10 +242,15 @@ class Helper():
             return driver, -1
         return driver, len(classes)
 
-    def CountWeekWorkload(self, driver):
+    def CountWeekWorkloadOnTabPortalDoProfessor(self, driver):
         try:
-            class_node = driver.find_elements_by_xpath('//table[@class="meus-horarios"]/tbody/tr/td[contains(@style, "background-color")]')
+            current_semester = driver.find_element_by_xpath('//div[@class="webpart-classe"]/div[@class="webpart-classe-detalhes"]/span[1]').text
+            classes_hours_nodes = driver.find_elements_by_xpath('//div[@class="webpart-classe"]/div[@class="webpart-classe-detalhes"]/span[1][contains(., "%s")]/../following-sibling::div[@class="webpart-classe-links"]/a/span/b' % (current_semester))
+            workload = 0
+            for chn in classes_hours_nodes:
+                workload = workload + int(chn.text)
+            workload = workload / 15
         except Exception as exc:
             print (exc)
             return driver, -1
-        return driver, len(class_node)
+        return driver, workload
