@@ -95,4 +95,4 @@ api.add_resource(UESC_Listar_Resultados_Recentes, '/uesc_listar_resultados_recen
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5060))
-    app.run(debug=True, host='0.0.0.0', port=port, threaded=True)
+    app.run(debug=False, host='0.0.0.0', port=port, threaded=True)
