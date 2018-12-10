@@ -23,7 +23,6 @@ lana.on("polling_error", error => {
 
 //Any message
 lana.on("message", msg => {
-  // lana.sendMessage(msg.chat.id, 'Recebi a mensagem "' + msg.text + '" de: ' + msg.from.first_name + ' ' + msg.from.last_name);
   let msgJson = {
     interface: "telegram",
     type: "incoming",
@@ -63,8 +62,8 @@ const fowardMessageToLana = msg => {
   };
 
   request(options, (err, resp, body) => {
-    if (!resp || resp.statusCode != 200 || err) {
-      let msgJson = {
+    if (resp == undefined || resp.statusCode != 200 || err != undefined) {
+      const msgJson = {
         interface: "telegram",
         type: "outgoing",
         message: msg.text,
@@ -75,9 +74,12 @@ const fowardMessageToLana = msg => {
         date: new Date()
       };
       console.log(JSON.stringify(msgJson));
-      lana.sendMessage(msg.chat.id, "Ops, algo deu errado, tente novamente");
+      lana.sendMessage(
+        msg.chat.id,
+        "Ops, algo deu errado, tente novamente mais tarde"
+      );
     } else {
-      let msgJson = {
+      const msgJson = {
         interface: "telegram",
         type: "outgoing",
         message: body.message,
@@ -94,7 +96,10 @@ const fowardMessageToLana = msg => {
       if (body.message != undefined) {
         lana.sendMessage(body.chatId, body.message, markdown);
       } else {
-        lana.sendMessage(body.chatId, "Ops, algo deu errado, tente novamente");
+        lana.sendMessage(
+          body.chatId,
+          "Ops, algo deu errado, tente novamente mais tarde"
+        );
       }
     }
   });

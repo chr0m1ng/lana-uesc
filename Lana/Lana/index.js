@@ -1,6 +1,6 @@
-const lana = require('./lana');
-const b4a = require('./b4a');
-const watson = require('./watson');
+const lana = require("./lana");
+const b4a = require("./b4a");
+const watson = require("./watson");
 
 // const answer = {
 //     context : {
@@ -30,6 +30,7 @@ const watson = require('./watson');
 //     .then(res => console.log(res))
 //     .catch(err => console.error(res));
 
-// watson.sendMessageToWatson('noticias de hoje')
-//     .then(res => console.log(res))
-//     .catch(err => console.error(err));
+watson
+  .sendMessageToWatson("noticias de hoje", [])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));

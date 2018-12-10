@@ -281,7 +281,7 @@ class Bot():
                     else:
                         return self.error_strings.GetGenericErrorMessage()
                 else:
-                    return self.error_strings.GetNotAllowedMessage(params['sagres_username'], params['sagres_password'], 'professor')
+                    return self.Sagres_Listar_Disciplinas_Corrente(params) #caso seja um aluno listar as disciplinas cursadas
             else:
                 return self.error_strings.GetLoginErrorMessage(params['sagres_username'], params['sagres_password'])
         else:
