@@ -12,7 +12,7 @@
   "dependencies": {
     "crypto": "^1.0.1",
     "express": "^4.16.4",
-    "parse": "^1.11.1",
+    "parse": "^2.10.0",
     "request": "^2.88.0",
     "watson-developer-cloud": "^3.15.0"
   }
