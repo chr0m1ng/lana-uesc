@@ -1,5 +1,5 @@
 # Lana
-- [x] Latest News
+
 Due to personal reasons this is no longer being maintained. I will fork Lana to another repository for my use only.
 
 She's fine and bothub's bot are working but still need some improvments on dialog ant other stuff.
